@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/*
+  Tailwind v4 reads theme tokens straight from CSS custom properties here —
+  this replaces the old tailwind.config.js. Every --color-*, --font-*,
+  --shadow-*, --radius-* below auto-generates matching utility classes
+  (e.g. --color-surface-raised -> bg-surface-raised, hover:border-sand, etc).
+  Change a value here once and it propagates to every component.
+*/
+@theme {
+  --color-bg: #171611;
+  --color-surface: #1e1d18;
+  --color-surface-raised: #2b271e;
+  --color-border: #4d4029;
+  --color-accent: #a8705f;
+  --color-accent-hover: #c08871;
+  --color-olive: #8a7d5a;
+  --color-sand: #dbb98c;
+  --color-text-primary: #f4efe8;
+  --color-text-secondary: #b8b0a3;
+  --color-text-muted: #7d766a;
+  --color-danger: #d97757;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --shadow-card: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+  --radius-card: 20px;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text-primary font-body antialiased;
+  }
+}
