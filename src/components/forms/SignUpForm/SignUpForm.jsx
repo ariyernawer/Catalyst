@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../../ui/Input';
 import Select from '../../ui/Select';
 import TagSelector from '../../ui/TagSelector';
@@ -6,29 +7,28 @@ import Button from '../../ui/Button';
 import { EDUCATION_LEVELS, COMPETITION_INTERESTS } from '../../../constants/formOptions';
 import { validateSignUpForm } from '../../../utils/validation';
 
-const INITIAL_VALUES={
-  fullName:'',
-  phoneNumber:'',
-  email:'',
+const INITIAL_VALUES = {
+  fullName: '',
+  phoneNumber: '',
+  email: '',
   educationLevel: '',
   password: '',
   confirmPassword: '',
   interests: [],
 };
 
-
-
 export default function SignUpForm() {
+  const navigate = useNavigate();
 
-  const [values,setValues]=useState(INITIAL_VALUES);
-  const[errors,setErrors]=useState({});
+  const [values, setValues] = useState(INITIAL_VALUES);
+  const [errors, setErrors] = useState({});
 
   const setField = (field) => (e) => {
     setValues((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-   const setInterests = (interests) => {
-     setValues((prev) => ({ ...prev, interests }));
+  const setInterests = (interests) => {
+    setValues((prev) => ({ ...prev, interests }));
   };
 
   const handleSubmit = (e) => {
@@ -40,6 +40,7 @@ export default function SignUpForm() {
       // No backend yet — this is the single spot to wire up an API call later,
       // e.g. await api.createParticipant(values)
       console.log('Form is valid, ready to submit:', values);
+      navigate('/discover');
     }
   };
 

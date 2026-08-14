@@ -6,6 +6,7 @@ export default function Select({
   required = false,
   options,
   placeholder = 'Select...',
+  error,
   ...selectProps
 }) {
   return (
@@ -33,6 +34,8 @@ export default function Select({
           ▾
         </span>
       </div>
+      {error && <span className="text-xs text-danger">{error}</span>}
     </div>
   );
 }
+
