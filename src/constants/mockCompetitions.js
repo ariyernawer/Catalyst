@@ -1,13 +1,4 @@
-// TEMPORARY mock data.
-//
-// Shape mirrors what the /competitions endpoint is expected to return, so
-// swapping this file out for a real fetch later is a one-line change in
-// the page/hook that consumes it — nothing in the components should need
-// to change.
-//
-// deadline: ISO string. prize: number (smallest currency unit not needed,
-// just a plain integer). isHot / isBookmarked: booleans the backend will
-// eventually own.
+
 
 export const MOCK_COMPETITIONS = [
   {
@@ -98,11 +89,39 @@ export const MOCK_COMPETITIONS = [
     coverImage:
       "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop",
   },
+
+{
+    id: "comp-7",
+    title: "Content Creator Grant Program",
+    organizer: "MediaLab Foundation",
+    audience: "Open",
+    category: "grant",
+    prize: 2000,
+    currency: "$",
+    isHot: false,
+    isBookmarked: false,
+    deadline: "2026-09-15T23:59:00+06:00",
+    coverImage:
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    id: "comp-8",
+    title: "AI for Social Good Hackathon",
+    organizer: "Code for Change",
+    audience: "Open",
+    category: "hackathon",
+    prize: 5000,
+    currency: "$",
+    isHot: false,
+    isBookmarked: true,
+    deadline: "2026-08-30T20:00:00+06:00",
+    coverImage:
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop",
+  },
+  
 ];
 
-// Small numbers the top cards show. Backend will own these too eventually —
-// keep the key names stable (bookmarkedCount, newThisWeek, upcomingDeadlines)
-// since DiscoverPage reads them directly.
+
 export const MOCK_DASHBOARD_STATS = {
   bookmarkedCount: 2,
   newThisWeek: 18,

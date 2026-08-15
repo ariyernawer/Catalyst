@@ -11,8 +11,6 @@ import { Navbar } from "./Navbar";
  * @param {object}   user               - { name: string }
  * @param {string}   pageTitle
  * @param {string}   pageSubtitle
- * @param {string}   searchValue
- * @param {Function} onSearchChange
  * @param {number}   notificationCount
  * @param {import("react").ReactNode} children
  */
@@ -23,8 +21,6 @@ export function DashboardLayout({
   user,
   pageTitle,
   pageSubtitle,
-  searchValue,
-  onSearchChange,
   notificationCount = 0,
   children,
 }) {
@@ -35,8 +31,6 @@ export function DashboardLayout({
         onNavigate={onNavigate}
         bookmarkCount={bookmarkCount}
         user={user}
-        searchValue={searchValue}
-        onSearchChange={onSearchChange}
         notificationCount={notificationCount}
       />
 

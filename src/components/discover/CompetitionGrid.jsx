@@ -2,10 +2,8 @@ import { CompetitionCard } from "./CompetitionCard";
 
 /**
  * @param {object[]} competitions
- * @param {(id: string) => void} onToggleBookmark
- * @param {(id: string) => void} onOpen
  */
-export function CompetitionGrid({ competitions, onToggleBookmark, onOpen }) {
+export function CompetitionGrid({ competitions }) {
   if (competitions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-card bg-surface py-16 text-center shadow-card">
@@ -23,8 +21,6 @@ export function CompetitionGrid({ competitions, onToggleBookmark, onOpen }) {
         <CompetitionCard
           key={competition.id}
           competition={competition}
-          onToggleBookmark={onToggleBookmark}
-          onOpen={onOpen}
         />
       ))}
     </div>

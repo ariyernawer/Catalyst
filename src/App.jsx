@@ -5,13 +5,9 @@ import { SavedItemsPage } from './pages/Saved/SavedItemsPage';
 import { UpcomingPage } from './pages/Upcoming/UpcomingPage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
 import SignInPage from './pages/SignIn/SignInPage';
-import { BookmarksProvider } from './context/BookmarksContext.jsx';
-import { AuthProvider } from './context/AuthContext.jsx';
 
 export default function App() {
   return (
-    <AuthProvider>
-    <BookmarksProvider>
     <Routes>
       {/* Root redirect — prevents a blank screen at / */}
       <Route path="/" element={<Navigate to="/signup" replace />} />
@@ -33,7 +29,5 @@ export default function App() {
       {/* Catch-all — any unknown URL goes back to signup */}
       <Route path="*" element={<Navigate to="/signup" replace />} />
     </Routes>
-    </BookmarksProvider>
-    </AuthProvider>
   );
 }

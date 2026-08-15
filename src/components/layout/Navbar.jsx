@@ -21,8 +21,6 @@ export function Navbar({
   onNavigate,
   bookmarkCount = 0,
   user,
-  searchValue = "",
-  onSearchChange,
   notificationCount = 0,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -157,8 +155,7 @@ export function Navbar({
             />
             <input
               type="text"
-              value={searchValue}
-              onChange={(e) => onSearchChange?.(e.target.value)}
+              readOnly
               placeholder="Search competitions…"
               className="w-44 rounded-full border border-border bg-bg py-2 pl-8 pr-4 text-sm text-text-primary placeholder:text-text-muted transition-all focus:border-sand focus:outline-none focus:w-56 focus:ring-2 focus:ring-sand/20 xl:w-56"
             />

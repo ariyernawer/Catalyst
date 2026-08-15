@@ -1,13 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
-/*
-  Tailwind v4 reads theme tokens straight from CSS custom properties here —
-  this replaces the old tailwind.config.js. Every --color-*, --font-*,
-  --shadow-*, --radius-* below auto-generates matching utility classes
-  (e.g. --color-surface-raised -> bg-surface-raised, hover:border-sand, etc).
-  Change a value here once and it propagates to every component.
-*/
+
 @theme {
   --color-bg: #0c1519;
   --color-surface: #162127;
@@ -58,17 +52,9 @@
   100% { transform: scale(1);    }
 }
 
-.animate-slide-down  { animation: slide-down  0.18s cubic-bezier(0.16,1,0.3,1) forwards; }
-.animate-fade-up     { animation: fade-up     0.22s cubic-bezier(0.16,1,0.3,1) forwards; }
-.animate-heart-pop   { animation: heart-pop   0.35s ease forwards; }
-
-.discover-spotlight > div, .profile-identity, .deadline-hero { position: relative; overflow: hidden; }
-.discover-spotlight > div::after, .profile-identity::after, .deadline-hero::after { content: ""; position: absolute; width: 15rem; height: 15rem; right: -7rem; top: -9rem; border-radius: 999px; background: radial-gradient(circle, rgba(207,157,123,.20), transparent 68%); pointer-events: none; }
-.discover-stat, .interactive-panel { transition: transform 240ms ease, box-shadow 240ms ease; }
-.discover-stat:hover, .interactive-panel:hover { transform: translateY(-4px); box-shadow: 0 20px 38px -24px rgba(207,157,123,.75); }
-.deadline-row { transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease; }
-.deadline-row:hover { transform: translateX(5px); border-color: rgba(207,157,123,.6); box-shadow: 0 20px 40px -28px rgba(0,0,0,.8); }
-.profile-avatar { box-shadow: 0 0 0 8px rgba(207,157,123,.10), 0 16px 32px -14px rgba(207,157,123,.65); }
+.animate-slide-down { animation: slide-down 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-up { animation: fade-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-heart-pop { animation: heart-pop 0.35s ease forwards; }
 
 /* A subtle moving gradient ring gives Discover cards a clear interactive state. */
 .competition-card {
@@ -93,10 +79,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .competition-card,
-  .competition-card img,
-  .competition-card > div { transition: none; }
-  .competition-card:hover { transform: none; }
   .competition-card:hover { animation: none; }
-  .discover-stat:hover, .interactive-panel:hover, .deadline-row:hover { transform: none; }
 }

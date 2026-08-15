@@ -5,12 +5,9 @@ import { CATEGORIES } from "../../constants/categories";
 
 /**
  * @param {object} competition - see constants/mockCompetitions.js for shape
- * @param {(id: string) => void} onToggleBookmark
- * @param {(id: string) => void} onOpen
  */
-export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
+export function CompetitionCard({ competition }) {
   const {
-    id,
     title,
     organizer,
     audience,
@@ -27,12 +24,8 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
   const categoryLabel = CATEGORIES.find((entry) => entry.id === category)?.label ?? category;
 
   return (
-    <article className="competition-card group relative flex flex-col overflow-hidden rounded-card bg-surface shadow-card">
-      <button
-        type="button"
-        onClick={() => onOpen?.(id)}
-        className="relative block aspect-[16/10] w-full overflow-hidden text-left"
-      >
+    <article className="competition-card group relative flex flex-col overflow-hidden rounded-card bg-surface shadow-card motion-reduce:transition-none motion-reduce:hover:transform-none">
+      <div className="relative block aspect-[16/10] w-full overflow-hidden text-left">
         <img
           src={coverImage}
           alt=""
@@ -47,13 +40,7 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
 
         <div className="absolute right-3 top-3 flex items-center gap-2">
           {isHot && <Badge variant="hot">Hot</Badge>}
-          <BookmarkButton
-            isBookmarked={isBookmarked}
-            onToggle={(event) => {
-              event.stopPropagation();
-              onToggleBookmark?.(id);
-            }}
-          />
+          <BookmarkButton isBookmarked={isBookmarked} />
         </div>
 
         {quote ? (
@@ -71,7 +58,7 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
           {currency}
           {prize.toLocaleString()}
         </div>
-      </button>
+      </div>
 
       <div className="relative flex flex-1 flex-col gap-3 p-5 transition-transform duration-300 group-hover:-translate-y-0.5">
         <div>
