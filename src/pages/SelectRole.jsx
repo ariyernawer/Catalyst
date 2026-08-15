@@ -56,7 +56,7 @@ function SelectRole() {
           </button>
 
           <button
-            onClick={() => navigate("/organizer")}
+            onClick={() => navigate("/organizer/signup")}
             className="border border-white/15 rounded-2xl p-6 text-left hover:border-sand transition-colors"
             style={{ background: "rgba(255, 255, 255, 0.03)" }}
           >
