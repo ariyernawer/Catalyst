@@ -5,12 +5,16 @@ import { SavedItemsPage } from './pages/Saved/SavedItemsPage';
 import { UpcomingPage } from './pages/Upcoming/UpcomingPage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
 import SignInPage from './pages/SignIn/SignInPage';
+import Landing from './pages/Landing';
+
+
+import SelectRole from './pages/SelectRole';
 
 export default function App() {
   return (
     <Routes>
-      {/* Root redirect — prevents a blank screen at / */}
-      <Route path="/" element={<Navigate to="/signup" replace />} />
+      {/* Root shows Landing page */}
+      <Route path="/" element={<Landing />} />
 
       <Route
         path="/signup"
@@ -20,13 +24,22 @@ export default function App() {
           </div>
         }
       />
+      <Route
+        path="/signin"
+        element={
+          <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
+            <SignInPage />
+          </div>
+        }
+      />
       <Route path="/discover" element={<DiscoverPage />} />
-      <Route path="/signin" element={<div className="min-h-screen flex items-center justify-center p-4 sm:p-8"><SignInPage /></div>} />
       <Route path="/saved" element={<SavedItemsPage />} />
       <Route path="/upcoming" element={<UpcomingPage />} />
       <Route path="/profile" element={<ProfilePage />} />
 
-      {/* Catch-all — any unknown URL goes back to signup */}
+      <Route path="/select-role" element={<SelectRole />} />
+     
+      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/signup" replace />} />
     </Routes>
   );
