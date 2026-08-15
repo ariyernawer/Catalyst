@@ -9,44 +9,64 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
 
   const [mode, setMode] = useState(initialMode);
   const [formData, setFormData] = useState({
-    organizationName: '', organizationType: '', contactPerson: '',
-    phone: '', email: '', website: '', password: '', confirmPassword: '', description: ''
+    organizationName: '',
+    organizationType: 'Non-Profit Organization',
+    contactPerson: '',
+    phone: '',
+    email: '',
+    website: '',
+    password: '',
+    confirmPassword: '',
+    description: ''
   });
   const [signInData, setSignInData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSignInChange = (e) => {
     const { name, value } = e.target;
-    setSignInData(prev => ({ ...prev, [name]: value }));
+    setSignInData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleClose = () => { if (onClose) onClose(); else navigate('/organizer'); };
+  const handleClose = () => {
+    if (onClose) onClose();
+    else navigate('/organizer');
+  };
 
   const handleSignUpSubmit = (e) => {
     e.preventDefault();
-    const newErrors = {};
-    if (!formData.organizationName.trim()) newErrors.organizationName = 'Organization name is required';
-    if (!formData.organizationType || formData.organizationType === 'Select...') newErrors.organizationType = 'Please select organization type';
-    if (!formData.contactPerson.trim()) newErrors.contactPerson = 'Contact person is required';
-    if (!formData.email.trim()) newErrors.email = 'Official email is required';
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
     setIsSubmitting(true);
-    setTimeout(() => { setIsSubmitting(false); registerOrganizer(formData); handleClose(); navigate('/organizer'); }, 450);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      registerOrganizer({
+        organizationName: formData.organizationName || 'InnovateHub Foundation',
+        organizationType: formData.organizationType || 'Non-Profit Organization',
+        contactPerson: formData.contactPerson || 'Priya Sharma',
+        phone: formData.phone || '+880 1800 000000',
+        email: formData.email || 'contact@innovatehub.org',
+        website: formData.website || 'https://innovatehub.org',
+        description: formData.description || 'Empowering student innovation and opportunities worldwide.'
+      });
+      handleClose();
+      navigate('/organizer');
+    }, 200);
   };
 
   const handleSignInSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => { setIsSubmitting(false); login(); handleClose(); navigate('/organizer'); }, 350);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      login();
+      handleClose();
+      navigate('/organizer');
+    }, 200);
   };
 
   return (
@@ -93,9 +113,14 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                     Organization Name <span className="text-sand">*</span>
                   </label>
-                  <input type="text" name="organizationName" value={formData.organizationName} onChange={handleChange}
-                    placeholder="Tech Collective BD" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
-                  {errors.organizationName && <p className="field-validation-error-text text-xs text-danger mt-1">{errors.organizationName}</p>}
+                  <input
+                    type="text"
+                    name="organizationName"
+                    value={formData.organizationName}
+                    onChange={handleChange}
+                    placeholder="Tech Collective BD"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
@@ -103,12 +128,15 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                     Organization Type <span className="text-sand">*</span>
                   </label>
                   <div className="select-field-wrapper relative">
-                    <select name="organizationType" value={formData.organizationType} onChange={handleChange}
-                      className="form-select w-full bg-bg border border-border focus:border-sand focus:outline-none rounded-xl px-3.5 py-2.5 text-sm text-text-primary transition-colors appearance-none cursor-pointer">
-                      <option value="Select...">Select...</option>
+                    <select
+                      name="organizationType"
+                      value={formData.organizationType}
+                      onChange={handleChange}
+                      className="form-select w-full bg-bg border border-border focus:border-sand focus:outline-none rounded-xl px-3.5 py-2.5 text-sm text-text-primary transition-colors appearance-none cursor-pointer"
+                    >
+                      <option value="Non-Profit Organization">Non-Profit Organization</option>
                       <option value="Tech Community / DAO">Tech Community / DAO</option>
                       <option value="University Club">University Club</option>
-                      <option value="Non-Profit Organization">Non-Profit Organization</option>
                       <option value="Corporate / Enterprise">Corporate / Enterprise</option>
                       <option value="Student Chapter">Student Chapter</option>
                       <option value="Educational Institute">Educational Institute</option>
@@ -120,67 +148,105 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                       </svg>
                     </div>
                   </div>
-                  {errors.organizationType && <p className="field-validation-error-text text-xs text-danger mt-1">{errors.organizationType}</p>}
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                     Contact Person <span className="text-sand">*</span>
                   </label>
-                  <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange}
-                    placeholder="Nusrat Jahan" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
-                  {errors.contactPerson && <p className="field-validation-error-text text-xs text-danger mt-1">{errors.contactPerson}</p>}
+                  <input
+                    type="text"
+                    name="contactPerson"
+                    value={formData.contactPerson}
+                    onChange={handleChange}
+                    placeholder="Nusrat Jahan"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">Phone</label>
-                  <input type="text" name="phone" value={formData.phone} onChange={handleChange}
-                    placeholder="+880 1800 000000" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="+880 1800 000000"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                     Official Email <span className="text-sand">*</span>
                   </label>
-                  <input type="email" name="email" value={formData.email} onChange={handleChange}
-                    placeholder="info@org.com" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
-                  {errors.email && <p className="field-validation-error-text text-xs text-danger mt-1">{errors.email}</p>}
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="info@org.com"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">Website / Social Page</label>
-                  <input type="text" name="website" value={formData.website} onChange={handleChange}
-                    placeholder="https://org.com" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                  <input
+                    type="text"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    placeholder="https://org.com"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                     Password <span className="text-sand">*</span>
                   </label>
-                  <input type="password" name="password" value={formData.password} onChange={handleChange}
-                    placeholder="Min. 8 characters" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Min. 8 characters"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
 
                 <div className="form-field-input-group">
                   <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                     Confirm Password <span className="text-sand">*</span>
                   </label>
-                  <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
-                    placeholder="Repeat password" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Repeat password"
+                    className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                  />
                 </div>
               </div>
 
               <div className="form-field-input-group">
                 <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">Brief Description</label>
-                <textarea name="description" rows={3} value={formData.description} onChange={handleChange}
+                <textarea
+                  name="description"
+                  rows={3}
+                  value={formData.description}
+                  onChange={handleChange}
                   placeholder="Describe your organization..."
-                  className="form-textarea w-full bg-bg border border-border focus:border-sand focus:outline-none rounded-xl px-3.5 py-2.5 text-sm text-text-primary placeholder-text-muted transition-colors resize-none" />
+                  className="form-textarea w-full bg-bg border border-border focus:border-sand focus:outline-none rounded-xl px-3.5 py-2.5 text-sm text-text-primary placeholder-text-muted transition-colors resize-none"
+                />
               </div>
 
               <div className="form-review-info-callout bg-surface-raised border border-border rounded-xl p-3.5 flex items-start gap-3">
                 <span className="text-sand text-sm mt-0.5 select-none font-mono">◆</span>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  Organizer accounts are reviewed within <strong className="text-text-primary font-semibold">24 hours</strong>. Once approved, you can list unlimited competitions.
+                  Organizer accounts are reviewed within <strong className="text-text-primary font-semibold">24 hours</strong>.
                 </p>
               </div>
 
@@ -188,14 +254,20 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                 By registering you agree to our <a href="#terms" className="underline hover:text-text-primary">Terms</a> and <a href="#privacy" className="underline hover:text-text-primary">Privacy Policy</a>.
               </p>
 
-              <button type="submit" disabled={isSubmitting}
-                className="signup-form-submit-button w-full py-3 px-6 bg-accent hover:bg-accent-hover text-text-primary text-sm font-medium rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 active:scale-[0.99] transition-all">
-                {isSubmitting ? <span>Submitting Application...</span> : <span>Create Account &amp; Explore &rarr;</span>}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="signup-form-submit-button w-full py-3 px-6 bg-accent hover:bg-accent-hover text-text-primary text-sm font-medium rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 active:scale-[0.99] transition-all"
+              >
+                {isSubmitting ? <span>Entering Dashboard...</span> : <span>Create Account &amp; Explore &rarr;</span>}
               </button>
 
               <div className="auth-mode-switch-row text-center pt-2">
-                <button type="button" onClick={() => setMode('signin')}
-                  className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => setMode('signin')}
+                  className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                >
                   Already have an account? <span className="text-sand hover:underline font-medium">Sign in &rarr;</span>
                 </button>
               </div>
@@ -222,16 +294,28 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                 <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                   Official Email <span className="text-sand">*</span>
                 </label>
-                <input type="email" name="email" value={signInData.email} onChange={handleSignInChange}
-                  placeholder="info@org.com" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                <input
+                  type="email"
+                  name="email"
+                  value={signInData.email}
+                  onChange={handleSignInChange}
+                  placeholder="info@org.com"
+                  className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                />
               </div>
 
               <div className="form-field-input-group">
                 <label className="form-field-label-text block text-xs font-medium text-text-secondary mb-1.5">
                   Password <span className="text-sand">*</span>
                 </label>
-                <input type="password" name="password" value={signInData.password} onChange={handleSignInChange}
-                  placeholder="••••••••" className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted" />
+                <input
+                  type="password"
+                  name="password"
+                  value={signInData.password}
+                  onChange={handleSignInChange}
+                  placeholder="••••••••"
+                  className="form-input w-full px-3.5 py-2.5 text-sm placeholder-text-muted"
+                />
               </div>
 
               <div className="signin-form-extra-options flex items-center justify-between text-xs text-text-secondary py-1">
@@ -242,14 +326,20 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
                 <a href="#forgot" className="text-sand hover:underline">Forgot password?</a>
               </div>
 
-              <button type="submit" disabled={isSubmitting}
-                className="signin-form-submit-button w-full py-3 px-6 bg-accent hover:bg-accent-hover text-text-primary text-sm font-medium rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 transition-all">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="signin-form-submit-button w-full py-3 px-6 bg-accent hover:bg-accent-hover text-text-primary text-sm font-medium rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 transition-all"
+              >
                 {isSubmitting ? <span>Signing In...</span> : <span>Sign In to Dashboard &rarr;</span>}
               </button>
 
               <div className="auth-mode-switch-row text-center pt-2">
-                <button type="button" onClick={() => setMode('signup')}
-                  className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => setMode('signup')}
+                  className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                >
                   Don&apos;t have an organizer account? <span className="text-sand hover:underline font-medium">Register now &rarr;</span>
                 </button>
               </div>

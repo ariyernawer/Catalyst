@@ -7,21 +7,21 @@ import MyCompetitions from './pages/organizer/MyCompetitions';
 import CreateCompetition from './pages/organizer/CreateCompetition';
 import OrganizationProfile from './pages/organizer/OrganizationProfile';
 import OrganizerSignup from './pages/organizer/OrganizerSignup';
-import Participant from './pages/Participant';
+import OrganizerParticipant from './pages/organizer/organizerParticipant';
 
 function App() {
   return (
     <OrganizerProvider>
       <BrowserRouter>
         <Routes>
-          {/* Direct Sign Up / Auth as the entrance page (Landing page removed completely) */}
+          {/* Direct Sign Up / Auth as the entrance page */}
           <Route path="/" element={<OrganizerSignup />} />
           <Route path="/signup" element={<OrganizerSignup />} />
           <Route path="/signin" element={<OrganizerSignup />} />
           <Route path="/login" element={<OrganizerSignup />} />
 
           {/* Participant Route */}
-          <Route path="/participant" element={<Participant />} />
+          <Route path="/participant" element={<OrganizerParticipant />} />
 
           {/* Organizer Dashboard & Pages */}
           <Route

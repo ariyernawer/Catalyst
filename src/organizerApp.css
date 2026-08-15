@@ -1,0 +1,19 @@
+/* Organizer specific custom styles and overrides */
+
+.organizer-custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.organizer-custom-scrollbar::-webkit-scrollbar-track {
+  background: #0c1519;
+}
+
+.organizer-custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3a3534;
+  border-radius: 9999px;
+}
+
+.organizer-custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #5c6b6e;
+}
