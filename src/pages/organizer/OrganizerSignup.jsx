@@ -69,8 +69,12 @@ export const OrganizerSignup = () => {
     <div className="signup-page-full-screen page-container flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 selection:bg-sand/25 selection:text-white">
       {/* Brand Header Logo Row */}
       <div className="signup-brand-header-row flex items-center gap-2.5 mb-6">
-        <div className="brand-circular-logo-icon w-8 h-8 rounded-full bg-surface border border-border text-text-primary flex items-center justify-center font-display font-bold text-sm shadow-md">C</div>
-        <span className="brand-catalyst-name-text font-display text-2xl font-semibold tracking-tight text-text-primary">Catalyst</span>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand font-display text-sm font-bold text-bg">
+          C
+        </span>
+        <span className="font-display text-lg font-bold text-text-primary">
+          Catalyst
+        </span>
       </div>
 
       {/* Main Auth Form Card */}

@@ -7,7 +7,6 @@ import MyCompetitions from './pages/organizer/MyCompetitions';
 import CreateCompetition from './pages/organizer/CreateCompetition';
 import OrganizationProfile from './pages/organizer/OrganizationProfile';
 import OrganizerSignup from './pages/organizer/OrganizerSignup';
-import OrganizerParticipant from './pages/organizer/organizerParticipant';
 
 function App() {
   return (
@@ -19,9 +18,6 @@ function App() {
           <Route path="/signup" element={<OrganizerSignup />} />
           <Route path="/signin" element={<OrganizerSignup />} />
           <Route path="/login" element={<OrganizerSignup />} />
-
-          {/* Participant Route */}
-          <Route path="/participant" element={<OrganizerParticipant />} />
 
           {/* Organizer Dashboard & Pages */}
           <Route

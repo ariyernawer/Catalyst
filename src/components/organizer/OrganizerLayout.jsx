@@ -36,9 +36,9 @@ export const OrganizerLayout = ({ children }) => {
   const handleSignOut = () => { logout(); navigate('/'); };
 
   return (
-    <div className="organizer-app-page-shell flex flex-col antialiased font-body">
-      {/* Top Header Bar */}
-      <header className="organizer-top-header-bar px-4 sm:px-6 flex items-center justify-between">
+    <div className="organizer-app-page-shell flex flex-col antialiased font-body min-h-screen bg-bg text-text-primary">
+      {/* Top Sticky Header Bar */}
+      <header className="organizer-top-header-bar sticky top-0 z-50 px-6 sm:px-8 py-4 flex items-center justify-between border-b border-border bg-[#0c1519]/95 backdrop-blur-md shadow-xs">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -50,10 +50,10 @@ export const OrganizerLayout = ({ children }) => {
           </button>
 
           <Link to="/organizer" className="brand-logo-link-row flex items-center gap-2.5">
-            <div className="brand-circular-logo-icon w-8 h-8 rounded-full bg-surface border border-border text-text-primary flex items-center justify-center font-display font-bold text-sm shadow-xs">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand font-display text-sm font-bold text-bg">
               C
-            </div>
-            <span className="brand-catalyst-name-text font-display text-xl font-semibold tracking-tight text-text-primary">
+            </span>
+            <span className="font-display text-lg font-bold text-text-primary">
               Catalyst
             </span>
             <span className="brand-organizer-role-badge hidden sm:inline-block text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-surface text-text-secondary border border-border">
@@ -84,7 +84,7 @@ export const OrganizerLayout = ({ children }) => {
 
         {/* Left Sidebar Panel */}
         <aside
-          className={`organizer-left-sidebar-panel sidebar fixed md:sticky top-16 h-[calc(100vh-4rem)] z-40 flex flex-col justify-between transition-all duration-300 ${
+          className={`organizer-left-sidebar-panel sidebar fixed md:sticky top-[65px] h-[calc(100vh-65px)] z-40 flex flex-col justify-between transition-all duration-300 ${
             collapsed ? 'w-20' : 'w-64'
           } ${mobileOpen ? 'left-0' : '-left-full md:left-0'}`}
         >

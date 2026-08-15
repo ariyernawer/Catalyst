@@ -7,10 +7,10 @@ export const OrganizerLanding = () => {
     <div className="organizer-landing-full-page page-container flex flex-col justify-center items-center px-4 py-16 selection:bg-sand/25 selection:text-white">
       {/* Brand Logo Header Row */}
       <div className="landing-brand-header-row flex items-center gap-2.5 mb-8">
-        <div className="brand-circular-logo-icon w-9 h-9 rounded-full bg-surface border border-border text-text-primary flex items-center justify-center font-display font-bold text-base shadow-md">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand font-display text-sm font-bold text-bg">
           C
-        </div>
-        <span className="brand-catalyst-name-text font-display text-2xl font-semibold tracking-tight text-text-primary">
+        </span>
+        <span className="font-display text-lg font-bold text-text-primary">
           Catalyst
         </span>
       </div>
