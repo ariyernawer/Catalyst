@@ -6,6 +6,7 @@ import TagSelector from '../../ui/TagSelector';
 import Button from '../../ui/Button';
 import { EDUCATION_LEVELS, COMPETITION_INTERESTS } from '../../../constants/formOptions';
 import { validateSignUpForm } from '../../../utils/validation';
+import { useAuth } from '../../../hooks/useAuth';
 
 const INITIAL_VALUES = {
   fullName: '',
@@ -19,6 +20,7 @@ const INITIAL_VALUES = {
 
 export default function SignUpForm() {
   const navigate = useNavigate();
+  const { updateUser } = useAuth();
 
   const [values, setValues] = useState(INITIAL_VALUES);
   const [errors, setErrors] = useState({});
@@ -39,7 +41,13 @@ export default function SignUpForm() {
     if (Object.keys(validationErrors).length === 0) {
       // No backend yet — this is the single spot to wire up an API call later,
       // e.g. await api.createParticipant(values)
-      console.log('Form is valid, ready to submit:', values);
+      updateUser({
+        name: values.fullName.trim(),
+        email: values.email.trim(),
+        phoneNumber: values.phoneNumber,
+        educationLevel: values.educationLevel,
+        interests: values.interests,
+      });
       navigate('/discover');
     }
   };
@@ -136,7 +144,7 @@ export default function SignUpForm() {
         Create Account &amp; Explore →
       </Button>
 
-      <Button type="button" variant="link">
+      <Button type="button" variant="link" onClick={() => navigate('/signin')}>
         Already have an account? Sign in →
       </Button>
     </form>

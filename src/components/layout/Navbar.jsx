@@ -39,8 +39,6 @@ export function Navbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  const activeItem = NAV_ITEMS.find((item) => item.id === activeId);
-
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/90 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-3 px-4 sm:px-6 lg:px-8">

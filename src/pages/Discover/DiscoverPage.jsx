@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/layout/DashboardLayout";
 import { WelcomeBanner } from "../../components/discover/WelcomeBanner";
 import { StatCard } from "../../components/discover/SetCard";
@@ -7,8 +8,10 @@ import { DeadlineBanner } from "../../components/discover/DeadlineBanner";
 import { CategoryFilter } from "../../components/discover/CategoryFilter";
 import { CompetitionGrid } from "../../components/discover/CompetitionGrid";
 import { CATEGORIES } from "../../constants/categories";
-import { MOCK_COMPETITIONS, MOCK_DASHBOARD_STATS } from "../../constants/mockCompetitions";
+import { MOCK_DASHBOARD_STATS } from "../../constants/mockCompetitions";
+import { useBookmarks } from "../../hooks/useBookmarks";
 import { getTimeRemaining } from "../../utils/countdown";
+import { useAuth } from "../../hooks/useAuth";
 
 // ---------------------------------------------------------------------------
 // NOTE for wiring up the backend later:
@@ -22,10 +25,10 @@ import { getTimeRemaining } from "../../utils/countdown";
 // care where the data came from, so none of them need to change.
 // ---------------------------------------------------------------------------
 
-const currentUser = { name: "Rafsan" };
-
 export function DiscoverPage() {
-  const [competitions, setCompetitions] = useState(MOCK_COMPETITIONS);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { competitions, bookmarkedCompetitions, toggleBookmark } = useBookmarks();
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchValue, setSearchValue] = useState("");
 
@@ -40,11 +43,6 @@ export function DiscoverPage() {
     });
   }, [competitions, activeCategory, searchValue]);
 
-  const bookmarkedCompetitions = useMemo(
-    () => competitions.filter((competition) => competition.isBookmarked),
-    [competitions]
-  );
-
   const featuredDeadline = useMemo(() => {
     const soonest = bookmarkedCompetitions
       .map((competition) => ({
@@ -55,16 +53,6 @@ export function DiscoverPage() {
     return soonest;
   }, [bookmarkedCompetitions]);
 
-  function handleToggleBookmark(id) {
-    setCompetitions((previous) =>
-      previous.map((competition) =>
-        competition.id === id
-          ? { ...competition, isBookmarked: !competition.isBookmarked }
-          : competition
-      )
-    );
-  }
-
   function handleOpenCompetition(id) {
     // Placeholder until a detail route exists.
     console.log("open competition", id);
@@ -73,9 +61,9 @@ export function DiscoverPage() {
   return (
     <DashboardLayout
       activeNavId="discover"
-      onNavigate={(id) => console.log("navigate to", id)}
+      onNavigate={(id) => navigate(id === "bookmarks" ? "/saved" : id === "upcoming" ? "/upcoming" : id === "profile" ? "/profile" : "/discover")}
       bookmarkCount={bookmarkedCompetitions.length}
-      user={currentUser}
+      user={user}
       pageTitle="Discover"
       pageSubtitle={`${filteredCompetitions.length} competitions found`}
       searchValue={searchValue}
@@ -84,10 +72,10 @@ export function DiscoverPage() {
     >
       <div className="space-y-6">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <WelcomeBanner name={currentUser.name} deadlineCount={MOCK_DASHBOARD_STATS.upcomingDeadlines} />
+          <div className="discover-spotlight lg:col-span-2">
+            <WelcomeBanner name={user.name.split(" ")[0]} deadlineCount={MOCK_DASHBOARD_STATS.upcomingDeadlines} />
           </div>
-          <StatCard icon={Heart} value={bookmarkedCompetitions.length} label="Bookmarked" accent="danger" />
+          <div className="discover-stat"><StatCard icon={Heart} value={bookmarkedCompetitions.length} label="Bookmarked" accent="danger" /></div>
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -96,7 +84,7 @@ export function DiscoverPage() {
             <div className="sm:col-span-1">
               <DeadlineBanner
                 competition={featuredDeadline}
-                onView={() => handleOpenCompetition(featuredDeadline.id)}
+                onView={() => navigate("/upcoming")}
               />
             </div>
           )}
@@ -110,7 +98,7 @@ export function DiscoverPage() {
 
         <CompetitionGrid
           competitions={filteredCompetitions}
-          onToggleBookmark={handleToggleBookmark}
+          onToggleBookmark={toggleBookmark}
           onOpen={handleOpenCompetition}
         />
       </div>

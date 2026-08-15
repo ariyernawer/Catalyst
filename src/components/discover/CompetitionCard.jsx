@@ -27,7 +27,7 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
   const categoryLabel = CATEGORIES.find((entry) => entry.id === category)?.label ?? category;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-card bg-surface shadow-card">
+    <article className="competition-card group relative flex flex-col overflow-hidden rounded-card bg-surface shadow-card">
       <button
         type="button"
         onClick={() => onOpen?.(id)}
@@ -36,7 +36,7 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
         <img
           src={coverImage}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -73,7 +73,7 @@ export function CompetitionCard({ competition, onToggleBookmark, onOpen }) {
         </div>
       </button>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="relative flex flex-1 flex-col gap-3 p-5 transition-transform duration-300 group-hover:-translate-y-0.5">
         <div>
           <p className="text-xs text-text-muted">
             {organizer} · {audience}

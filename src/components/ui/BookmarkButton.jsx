@@ -14,13 +14,13 @@ export function BookmarkButton({ isBookmarked, onToggle, className }) {
       aria-pressed={isBookmarked}
       aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
       className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-full bg-bg/50 backdrop-blur-sm transition-colors hover:bg-bg/70",
+        "flex h-8 w-8 items-center justify-center rounded-full bg-bg/50 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-bg/70 active:scale-95",
         className
       )}
     >
       <Heart
         size={16}
-        className={isBookmarked ? "fill-danger text-danger" : "text-text-primary"}
+        className={isBookmarked ? "animate-heart-pop fill-danger text-danger" : "text-text-primary"}
       />
     </button>
   );

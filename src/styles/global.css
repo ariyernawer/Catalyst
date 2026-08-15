@@ -61,3 +61,42 @@
 .animate-slide-down  { animation: slide-down  0.18s cubic-bezier(0.16,1,0.3,1) forwards; }
 .animate-fade-up     { animation: fade-up     0.22s cubic-bezier(0.16,1,0.3,1) forwards; }
 .animate-heart-pop   { animation: heart-pop   0.35s ease forwards; }
+
+.discover-spotlight > div, .profile-identity, .deadline-hero { position: relative; overflow: hidden; }
+.discover-spotlight > div::after, .profile-identity::after, .deadline-hero::after { content: ""; position: absolute; width: 15rem; height: 15rem; right: -7rem; top: -9rem; border-radius: 999px; background: radial-gradient(circle, rgba(207,157,123,.20), transparent 68%); pointer-events: none; }
+.discover-stat, .interactive-panel { transition: transform 240ms ease, box-shadow 240ms ease; }
+.discover-stat:hover, .interactive-panel:hover { transform: translateY(-4px); box-shadow: 0 20px 38px -24px rgba(207,157,123,.75); }
+.deadline-row { transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease; }
+.deadline-row:hover { transform: translateX(5px); border-color: rgba(207,157,123,.6); box-shadow: 0 20px 40px -28px rgba(0,0,0,.8); }
+.profile-avatar { box-shadow: 0 0 0 8px rgba(207,157,123,.10), 0 16px 32px -14px rgba(207,157,123,.65); }
+
+/* A subtle moving gradient ring gives Discover cards a clear interactive state. */
+.competition-card {
+  isolation: isolate;
+  border: 1px solid transparent;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+}
+
+.competition-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 34px 70px -26px rgba(0, 0, 0, 0.8);
+  background:
+    linear-gradient(#162127, #162127) padding-box,
+    linear-gradient(120deg, #cf9d7b, #c85f4d, #8a5b45, #cf9d7b) border-box;
+  background-size: 100% 100%, 260% 260%;
+  animation: gradient-shift 2.8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .competition-card,
+  .competition-card img,
+  .competition-card > div { transition: none; }
+  .competition-card:hover { transform: none; }
+  .competition-card:hover { animation: none; }
+  .discover-stat:hover, .interactive-panel:hover, .deadline-row:hover { transform: none; }
+}

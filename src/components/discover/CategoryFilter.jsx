@@ -16,10 +16,10 @@ export function CategoryFilter({ categories, activeId, onChange }) {
             type="button"
             onClick={() => onChange(id)}
             className={cn(
-              "shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors",
+              "shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5",
               isActive
-                ? "bg-danger text-text-primary"
-                : "bg-surface text-text-secondary hover:text-text-primary"
+                ? "bg-danger text-text-primary shadow-[0_0_22px_rgba(200,95,77,0.38)]"
+                : "bg-surface text-text-secondary hover:bg-surface-raised hover:text-text-primary"
             )}
           >
             {label}
