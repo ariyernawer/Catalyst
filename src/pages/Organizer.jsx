@@ -1,5 +1,13 @@
-function Organizer() {
-  return <div>Organizer Page</div>
-}
+import React from 'react';
+import OrganizerLayout from '../components/organizer/OrganizerLayout';
+import OrganizerDashboard from './organizer/OrganizerDashboard';
 
-export default Organizer
+export const Organizer = () => {
+  return (
+    <OrganizerLayout>
+      <OrganizerDashboard />
+    </OrganizerLayout>
+  );
+};
+
+export default Organizer;

@@ -1,5 +1,7 @@
+import React from 'react';
+
 function Participant() {
-  return <div>Participant Page</div>
+  return null;
 }
 
-export default Participant
+export default Participant;
