@@ -33,6 +33,28 @@
   body {
     @apply bg-bg text-text-primary font-body antialiased;
   }
+
+  /* Keep every page's display headings aligned with the landing hero. */
+  h1.font-display {
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  h2.font-display {
+    font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  h3.font-display {
+    font-size: clamp(1.125rem, 1.8vw, 1.35rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
 }
 
 @keyframes slide-down {
@@ -55,6 +77,35 @@
 .animate-slide-down { animation: slide-down 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-fade-up { animation: fade-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-heart-pop { animation: heart-pop 0.35s ease forwards; }
+
+@keyframes category-carousel-scroll {
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.category-carousel {
+  overflow: hidden;
+  padding: 0.25rem 0;
+  mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+}
+
+.category-carousel-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+  animation: category-carousel-scroll 30s linear infinite;
+}
+
+.category-carousel:hover .category-carousel-track {
+  animation-play-state: paused;
+}
+
+.category-card {
+  flex: 0 0 clamp(8.75rem, 13vw, 10rem);
+  min-height: 10.25rem;
+}
 
 /* A subtle moving gradient ring gives Discover cards a clear interactive state. */
 .competition-card {
@@ -80,4 +131,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .competition-card:hover { animation: none; }
+  .category-carousel-track {
+    animation: none;
+  }
 }

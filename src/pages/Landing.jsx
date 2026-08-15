@@ -229,20 +229,28 @@ function Landing() {
             View all →
           </button>
         </div>
-        <div className="grid grid-cols-4 gap-4 lg:grid-cols-8">
-          {categories.map((cat, i) => (
-            <button
-              key={i}
-              onClick={() => navigate("/select-role")}
-              className="bg-surface border border-border rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-sand transition-colors"
-            >
-              {cat.icon}
-              <span className="text-text-primary text-sm font-medium text-center">
-                {cat.name}
-              </span>
-              <span className="text-text-muted text-xs">{cat.count}</span>
-            </button>
-          ))}
+        <div className="category-carousel" aria-label="Competition categories">
+          <div className="category-carousel-track">
+            {[...categories, ...categories].map((cat, i) => {
+              const isDuplicate = i >= categories.length;
+
+              return (
+                <button
+                  key={`${cat.name}-${i}`}
+                  onClick={() => navigate("/select-role")}
+                  className="category-card bg-surface border border-border rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-sand transition-colors"
+                  aria-hidden={isDuplicate || undefined}
+                  tabIndex={isDuplicate ? -1 : undefined}
+                >
+                  {cat.icon}
+                  <span className="text-text-primary text-sm font-medium text-center">
+                    {cat.name}
+                  </span>
+                  <span className="text-text-muted text-xs">{cat.count}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
