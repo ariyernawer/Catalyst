@@ -3,9 +3,7 @@ import { BookmarkButton } from "../ui/BookmarkButton";
 import { CountdownTimer } from "./CountdownTimer";
 import { CATEGORIES } from "../../constants/categories";
 
-/**
- * @param {object} competition - see constants/mockCompetitions.js for shape
- */
+
 export function CompetitionCard({ competition }) {
   const {
     title,
@@ -38,7 +36,7 @@ export function CompetitionCard({ competition }) {
           <Badge variant="category">{categoryLabel}</Badge>
         </div>
 
-        <div className="absolute right-3 top-3 flex items-center gap-2">
+      <div className="absolute right-3 top-3 flex items-center gap-2">
           {isHot && <Badge variant="hot">Hot</Badge>}
           <BookmarkButton isBookmarked={isBookmarked} />
         </div>

@@ -1,11 +1,6 @@
 import { cn } from "../../utils/cn";
 
-/**
- * @param {import("react").ComponentType} icon - lucide icon component
- * @param {string | number} value
- * @param {string} label
- * @param {"sand" | "danger"} accent
- */
+
 export function StatCard({ icon: Icon, value, label, accent = "sand" }) {
   const accentClass = accent === "danger" ? "text-danger" : "text-sand";
 

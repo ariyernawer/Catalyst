@@ -1,8 +1,6 @@
 import { CompetitionCard } from "./CompetitionCard";
 
-/**
- * @param {object[]} competitions
- */
+
 export function CompetitionGrid({ competitions }) {
   if (competitions.length === 0) {
     return (

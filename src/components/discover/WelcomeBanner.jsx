@@ -1,7 +1,4 @@
-/**
- * @param {string} name - display name, e.g. "Rafsan"
- * @param {number} deadlineCount - deadlines coming up this week
- */
+
 export function WelcomeBanner({ name, deadlineCount = 0 }) {
   const greeting = getGreeting();
 

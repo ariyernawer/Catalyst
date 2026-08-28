@@ -5,10 +5,10 @@ export default function SignUpPage() {
   return (
     <div className="relative w-full max-w-[900px] overflow-hidden rounded-card border border-border bg-bg p-6 shadow-card sm:p-8">
 
-      {/* Fixed glow */}
+       
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(207,157,123,0.12),transparent_60%)]" />
 
-      {/* Accent line */}
+   
       <span className="pointer-events-none absolute right-0 top-4 bottom-4 w-1 rounded bg-accent" />
 
       <div className="relative z-10">

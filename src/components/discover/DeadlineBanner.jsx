@@ -1,7 +1,4 @@
-/**
- * @param {{ title: string, daysLeft: number }} competition
- * @param {() => void} onView
- */
+
 export function DeadlineBanner({ competition, onView }) {
   if (!competition) return null;
 

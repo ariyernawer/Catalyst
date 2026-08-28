@@ -8,7 +8,7 @@ const UNITS = [
   { key: "seconds", label: "S" },
 ];
 
-/** @param {string} deadline - ISO date string */
+
 export function CountdownTimer({ deadline }) {
   const timeLeft = useCountdown(deadline);
 
