@@ -138,7 +138,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-bg">
       {/* Navbar */}
-      <nav className="flex items-center justify-between px-10 py-4 bg-surface border-b border-border sticky top-0 z-50">
+      <nav className="w-full flex items-center justify-between px-6 py-4 bg-surface border-b border-border sticky top-0 z-50">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand font-display text-sm font-bold text-bg">
             C
@@ -159,23 +159,23 @@ function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="flex items-center justify-between px-10 py-20 gap-10">
+      <section className="flex flex-col lg:flex-row items-center justify-between px-6 lg:px-10 py-12 lg:py-20 gap-10">
         {/* Left */}
-        <div className="flex-1 max-w-xl">
+        <div className="flex-1 w-full max-w-xl">
           <div className="inline-flex items-center gap-2 border border-border rounded-full px-4 py-1 text-text-secondary text-sm mb-8">
             <span className="w-2 h-2 bg-sand rounded-full"></span>
             2,400+ competitions. One platform.
           </div>
-          <h1 className="font-display text-6xl text-text-primary leading-tight mb-6">
+          <h1 className="font-display text-4xl lg:text-6xl text-text-primary leading-tight mb-6">
             Never Miss a <span className="text-sand italic">Winning</span>{" "}
             Opportunity Again
           </h1>
-          <p className="text-text-secondary text-lg mb-10">
+          <p className="text-text-secondary text-base lg:text-lg mb-10">
             Catalyst centralizes hackathons, case competitions, Hult Prize,
             programming contests, and innovation challenges — all filtered to
             what matters to you.
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <button
               onClick={() => navigate("/select-role")}
               className="bg-sand text-bg px-8 py-3 rounded-full font-medium hover:bg-accent-hover transition-colors"
@@ -192,7 +192,7 @@ function Landing() {
         </div>
 
         {/* Right — Floating Cards */}
-        <div className="w-72 h-[500px] overflow-hidden flex-shrink-0">
+        <div className="w-full lg:w-72 h-[400px] lg:h-[500px] overflow-hidden flex-shrink-0">
           <div className="animate-scroll flex flex-col gap-4">
             {[...floatingCards, ...floatingCards].map((card, i) => (
               <div
@@ -217,7 +217,7 @@ function Landing() {
       </section>
 
       {/* Browse by Category */}
-      <section className="px-10 py-16">
+      <section className="px-6 lg:px-10 py-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="font-display font-extrabold text-3xl text-text-primary">
             Browse by Category
@@ -233,12 +233,11 @@ function Landing() {
           <div className="category-carousel-track">
             {[...categories, ...categories].map((cat, i) => {
               const isDuplicate = i >= categories.length;
-
               return (
                 <button
                   key={`${cat.name}-${i}`}
                   onClick={() => navigate("/select-role")}
-                  className="category-card bg-surface border border-border rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-sand transition-colors"
+                  className="category-card bg-surface border border-border rounded-2xl p-4 flex flex-col items-center justify-center gap-2 hover:border-sand transition-colors"
                   aria-hidden={isDuplicate || undefined}
                   tabIndex={isDuplicate ? -1 : undefined}
                 >
@@ -255,7 +254,7 @@ function Landing() {
       </section>
 
       {/* Live Competitions */}
-      <section className="px-10 py-16">
+      <section className="px-6 lg:px-10 py-16">
         <div className="mb-2">
           <span className="text-sand text-xs tracking-widest uppercase">
             Featured
@@ -270,33 +269,24 @@ function Landing() {
               key={i}
               className="bg-surface border border-border rounded-2xl overflow-hidden"
             >
-              {/* Image with overlays */}
               <div className="relative h-52">
                 <img
                   src={card.image}
                   alt={card.title}
                   className="w-full h-full object-cover"
                 />
-
-                {/* Top left — tag + hot */}
                 <div className="absolute top-3 left-3 flex gap-2">
                   <span className="bg-sand text-bg font-body text-xs font-bold px-3 py-1 rounded-full uppercase">
                     {card.tag}
                   </span>
                 </div>
-
-                {/* Top right — heart */}
                 <div className="absolute top-3 right-3 w-8 h-8 bg-black bg-opacity-40 rounded-full flex items-center justify-center">
                   <Heart className="w-4 h-4 text-white" />
                 </div>
-
-                {/* Bottom right — prize */}
                 <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-text-primary text-sm px-3 py-1 rounded-full font-medium">
                   {card.prize}
                 </div>
               </div>
-
-              {/* Content below image */}
               <div className="p-5">
                 <p className="text-text-muted font-body text-xs mb-1">
                   {card.org}
@@ -304,17 +294,6 @@ function Landing() {
                 <h3 className="text-text-primary font-display font-bold text-lg mb-4">
                   {card.title}
                 </h3>
-
-                {/* Countdown 
-                <div className="flex gap-6">
-                  {[["12","D"],["17","H"],["53","M"],["36","S"]].map(([val, label]) => (
-                    <div key={label} className="text-center">
-                      <p className="text-sand font-display font-bold text-2xl">{val}</p>
-                      <p className="text-text-muted font-body text-xs">{label}</p>
-                    </div>
-                  ))}
-                </div>
-                */}
               </div>
             </div>
           ))}
@@ -322,8 +301,8 @@ function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border px-10 py-16">
-        <div className="flex justify-between gap-10">
+      <footer className="border-t border-border px-6 lg:px-10 py-16">
+        <div className="flex flex-col lg:flex-row justify-between gap-10">
           {/* Left */}
           <div className="max-w-xs">
             <div className="flex items-center gap-2.5 mb-4">
@@ -351,7 +330,7 @@ function Landing() {
           </div>
 
           {/* Links */}
-          <div className="flex gap-16">
+          <div className="flex flex-wrap gap-10 lg:gap-16">
             <div>
               <p className="text-text-muted text-xs tracking-widest uppercase mb-4">
                 Discover
@@ -414,11 +393,11 @@ function Landing() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex justify-between items-center mt-12 pt-6 border-t border-border">
+        <div className="flex flex-col lg:flex-row justify-between items-center mt-12 pt-6 border-t border-border gap-4">
           <p className="text-text-muted text-xs">
             © 2026 Catalyst. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-6">
             {["Privacy Policy", "Terms of Service", "Cookie Settings"].map(
               (l) => (
                 <p

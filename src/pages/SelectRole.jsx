@@ -5,19 +5,17 @@ function SelectRole() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-bg flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-bg flex items-center justify-center relative overflow-hidden p-4">
 
-    
       <div className="absolute w-[500px] h-[500px] bg-sand opacity-20 rounded-full blur-[120px] -top-32 -left-32" />
       <div className="absolute w-[500px] h-[500px] bg-accent opacity-25 rounded-full blur-[120px] -bottom-32 -right-32" />
       <div className="absolute w-72 h-72 bg-olive opacity-15 rounded-full blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
       {/* Glass container */}
       <div
-        className="relative z-10 w-full max-w-2xl p-10 rounded-3xl border border-white/20 backdrop-blur-2xl shadow-2xl"
+        className="relative z-10 w-full max-w-2xl p-6 md:p-10 rounded-3xl border border-white/20 backdrop-blur-2xl shadow-2xl"
         style={{ background: "rgba(22, 33, 39, 0.3)" }}
       >
-
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2.5 mb-4">
@@ -34,16 +32,14 @@ function SelectRole() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => navigate("/participant")}
             className="border border-white/15 rounded-2xl p-6 text-left hover:border-sand transition-colors"
             style={{ background: "rgba(255, 255, 255, 0.03)" }}
           >
             <GraduationCap className="w-8 h-8 text-sand mb-4" />
-            <h2 className="font-display text-xl text-text-primary mb-2">
-              Participant
-            </h2>
+            <h2 className="font-display text-xl text-text-primary mb-2">Participant</h2>
             <p className="text-text-secondary text-sm mb-4">
               Discover, bookmark & track competitions
             </p>
@@ -61,9 +57,7 @@ function SelectRole() {
             style={{ background: "rgba(255, 255, 255, 0.03)" }}
           >
             <Building2 className="w-8 h-8 text-sand mb-4" />
-            <h2 className="font-display text-xl text-text-primary mb-2">
-              Organizer
-            </h2>
+            <h2 className="font-display text-xl text-text-primary mb-2">Organizer</h2>
             <p className="text-text-secondary text-sm mb-4">
               List & manage your competitions
             </p>
