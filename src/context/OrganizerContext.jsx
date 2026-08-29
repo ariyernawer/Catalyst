@@ -380,30 +380,46 @@ export const OrganizerProvider = ({ children }) => {
     showToast('Organization profile saved successfully!');
   };
 
-  const registerOrganizer = (accountData) => {
+  const registerOrganizer = (accountData, token) => {
     const newOrg = {
       ...organizer,
-      organizationName: accountData.organizationName || 'New Organization',
-      organizationType: accountData.organizationType || 'Organization',
-      contactPerson: accountData.contactPerson || 'Contact Person',
-      name: accountData.contactPerson || 'Organizer',
+      ...accountData,
+      organizationName: accountData.organizationName || organizer.organizationName || 'New Organization',
+      organizationType: accountData.organizationType || organizer.organizationType || 'Organization',
+      contactPerson: accountData.contactPerson || organizer.contactPerson || 'Contact Person',
+      name: accountData.contactPerson || organizer.name || 'Organizer',
       phone: accountData.phone || '',
       email: accountData.email || '',
       website: accountData.website || '',
       description: accountData.description || '',
       verified: true
     };
+    if (token) {
+      localStorage.setItem('organizer_token', token);
+    }
     setOrganizer(newOrg);
     setIsAuthenticated(true);
     showToast('Organizer application submitted and account created!');
   };
 
-  const login = () => {
+  const login = (organizerData, token) => {
+    if (organizerData) {
+      const updatedOrg = {
+        ...organizer,
+        ...organizerData,
+        name: organizerData.contactPerson || organizerData.name || organizer.name
+      };
+      setOrganizer(updatedOrg);
+    }
+    if (token) {
+      localStorage.setItem('organizer_token', token);
+    }
     setIsAuthenticated(true);
     showToast('Signed in successfully!');
   };
 
   const logout = () => {
+    localStorage.removeItem('organizer_token');
     setIsAuthenticated(false);
     showToast('Signed out.', 'info');
   };

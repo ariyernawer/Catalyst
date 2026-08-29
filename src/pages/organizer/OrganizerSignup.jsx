@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrganizer } from '../../context/OrganizerContext';
 import { Building2 } from 'lucide-react';
+import API from '../../api/axios';
 
 export const OrganizerSignup = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export const OrganizerSignup = () => {
     password: ''
   });
 
+  const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -37,32 +39,41 @@ export const OrganizerSignup = () => {
     setSignInData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      registerOrganizer({
-        organizationName: formData.organizationName || 'InnovateHub Foundation',
-        organizationType: formData.organizationType || 'Non-Profit Organization',
-        contactPerson: formData.contactPerson || 'Priya Sharma',
-        phone: formData.phone || '+880 1800 000000',
-        email: formData.email || 'contact@innovatehub.org',
-        website: formData.website || 'https://innovatehub.org',
-        description: formData.description || 'Empowering student innovation and opportunities worldwide.'
-      });
+    try {
+      const { confirmPassword, ...payload } = formData;
+      const res = await API.post('/organizer/register', payload);
+      registerOrganizer(res.data.organizer || payload, res.data.token);
       navigate('/organizer');
-    }, 200);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSignInSubmit = (e) => {
+  const handleSignInSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      login();
+    try {
+      const res = await API.post('/organizer/login', signInData);
+      login(res.data.organizer, res.data.token);
       navigate('/organizer');
-    }, 200);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -104,6 +115,7 @@ export const OrganizerSignup = () => {
                   <input
                     type="text"
                     name="organizationName"
+                    required
                     value={formData.organizationName}
                     onChange={handleChange}
                     placeholder="Tech Collective BD"
@@ -145,6 +157,7 @@ export const OrganizerSignup = () => {
                   <input
                     type="text"
                     name="contactPerson"
+                    required
                     value={formData.contactPerson}
                     onChange={handleChange}
                     placeholder="Nusrat Jahan"
@@ -173,6 +186,7 @@ export const OrganizerSignup = () => {
                   <input
                     type="email"
                     name="email"
+                    required
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="info@org.com"
@@ -201,6 +215,7 @@ export const OrganizerSignup = () => {
                   <input
                     type="password"
                     name="password"
+                    required
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Min. 8 characters"
@@ -215,6 +230,7 @@ export const OrganizerSignup = () => {
                   <input
                     type="password"
                     name="confirmPassword"
+                    required
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Repeat password"
@@ -248,13 +264,15 @@ export const OrganizerSignup = () => {
                 By registering you agree to our <a href="#terms" className="underline hover:text-text-primary">Terms</a> and <a href="#privacy" className="underline hover:text-text-primary">Privacy Policy</a>.
               </p>
 
+              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="signup-form-submit-button w-full py-3 px-6 bg-accent hover:bg-accent-hover text-text-primary text-sm font-medium rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 active:scale-[0.99] transition-all"
               >
                 {isSubmitting ? (
-                  <span>Entering Dashboard...</span>
+                  <span>Creating Account...</span>
                 ) : (
                   <>
                     <span>Create Account &amp; Explore &rarr;</span>
@@ -265,7 +283,7 @@ export const OrganizerSignup = () => {
               <div className="auth-mode-switch-row text-center pt-2">
                 <button
                   type="button"
-                  onClick={() => setMode('signin')}
+                  onClick={() => { setMode('signin'); setError(''); }}
                   className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
                 >
                   Already have an account? <span className="text-sand hover:underline font-medium">Sign in &rarr;</span>
@@ -297,6 +315,7 @@ export const OrganizerSignup = () => {
                 <input
                   type="email"
                   name="email"
+                  required
                   value={signInData.email}
                   onChange={handleSignInChange}
                   placeholder="info@org.com"
@@ -311,6 +330,7 @@ export const OrganizerSignup = () => {
                 <input
                   type="password"
                   name="password"
+                  required
                   value={signInData.password}
                   onChange={handleSignInChange}
                   placeholder="••••••••"
@@ -325,6 +345,8 @@ export const OrganizerSignup = () => {
                 </label>
                 <a href="#forgot" className="text-sand hover:underline">Forgot password?</a>
               </div>
+
+              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
               <button
                 type="submit"
@@ -343,7 +365,7 @@ export const OrganizerSignup = () => {
               <div className="auth-mode-switch-row text-center pt-2">
                 <button
                   type="button"
-                  onClick={() => setMode('signup')}
+                  onClick={() => { setMode('signup'); setError(''); }}
                   className="auth-mode-toggle-button text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
                 >
                   Don&apos;t have an organizer account? <span className="text-sand hover:underline font-medium">Register now &rarr;</span>
