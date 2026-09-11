@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useOrganizer } from "../../../models/contexts/OrganizerContext";
+import { useOrganizer } from "../../../models/contexts/useOrganizer";
 import { Plus } from "lucide-react";
 import { CompetitionsTable, CreateCompetitionLink } from "../../components/organizer/CompetitionsTable";
 

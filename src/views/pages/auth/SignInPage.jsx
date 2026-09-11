@@ -3,11 +3,11 @@ import { GraduationCap } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { useAuthContext } from "../../../models/contexts/AuthContext";
+import { useAuthController } from "../../../controllers/authController";
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { login } = useAuthContext();
+  const { login } = useAuthController();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

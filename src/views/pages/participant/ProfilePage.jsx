@@ -1,7 +1,7 @@
 import { BellRing, Mail, MapPin, ShieldCheck, UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/layout/DashboardLayout";
-import { useAuthContext } from "../../../models/contexts/AuthContext";
+import { useAuthContext } from "../../../models/contexts/useAuthContext";
 import { MOCK_COMPETITIONS } from "../../../models/data/mockCompetitions";
 
 export default function ProfilePage() {

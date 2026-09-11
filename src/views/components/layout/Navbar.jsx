@@ -4,7 +4,7 @@ import {
   Search, Bell, Menu, X, LogOut, ChevronRight,
 } from "lucide-react";
 import { cn } from "../../../controllers/utils/cn";
-import { useAuthContext } from "../../../models/contexts/AuthContext";
+import { useAuthController } from "../../../controllers/authController";
 
 const NAV_ITEMS = [
   { id: "discover",  label: "Discover",  icon: Compass,         desc: "Browse all competitions"  },
@@ -26,7 +26,7 @@ export function Navbar({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const { logout } = useAuthContext();
+  const { logout } = useAuthController();
   const displayName = user?.fullname || user?.name || "User";
 
   /* Close dropdown when clicking outside */

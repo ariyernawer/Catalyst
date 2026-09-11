@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useOrganizer } from "../../../models/contexts/OrganizerContext";
+import { useOrganizer } from "../../../models/contexts/useOrganizer";
 import { Trophy, FileText, Bookmark, Calendar, TrendingUp, Plus, ArrowRight } from "lucide-react";
 import { StatCard } from "../../components/ui/StatCard";
 import { CompetitionsTable } from "../../components/organizer/CompetitionsTable";

@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useOrganizer } from '../../../models/contexts/OrganizerContext';
+import { useOrganizer } from '../../../models/contexts/useOrganizer';
+import { useOrganizerController } from '../../../controllers/organizerController';
 import { Globe, Mail, Phone, MapPin, ShieldCheck, Save } from 'lucide-react';
 
 const OrganizationProfilePage = () => {
-  const { organizer, updateProfile, publishedCount } = useOrganizer();
+  const { organizer, publishedCount } = useOrganizer();
+  const { updateOrganizationProfile } = useOrganizerController();
 
   const [formData, setFormData] = useState({
     organizationName: organizer.organizationName || '',
@@ -32,7 +34,7 @@ const OrganizationProfilePage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSaving(true);
-    setTimeout(() => { updateProfile(formData); setIsSaving(false); }, 400);
+    setTimeout(() => { updateOrganizationProfile(formData); setIsSaving(false); }, 400);
   };
 
   return (

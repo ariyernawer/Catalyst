@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useOrganizer } from "../../../models/contexts/OrganizerContext";
+import { useCompetitionController } from "../../../controllers/competitionController";
 import {
   Search, MoreHorizontal, Bookmark, Edit, Eye, Copy,
   Trash2, CheckCircle2, Clock, Archive, Plus,
@@ -26,7 +26,7 @@ export function CompetitionsTable({
   emptyAction = null,
 }) {
   const navigate = useNavigate();
-  const { deleteCompetition, toggleCompetitionStatus, duplicateCompetition } = useOrganizer();
+  const { deleteCompetition, toggleCompetitionStatus, duplicateCompetition } = useCompetitionController();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");

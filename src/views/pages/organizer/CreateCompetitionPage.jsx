@@ -1,71 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom';
-import { useOrganizer } from '../../../models/contexts/OrganizerContext';
+import { useOrganizer } from '../../../models/contexts/useOrganizer';
+import {
+  CATEGORIES, EDUCATION_LEVELS, PRESET_BANNERS,
+  buildTimeline, buildCompetitionPayload, getCompetitionForm, validateCompetitionStep,
+  useCompetitionController,
+} from '../../../controllers/competitionController';
 import { ArrowLeft, ArrowRight, Check, Calendar, Sparkles, Bookmark, ExternalLink, Info } from 'lucide-react';
-
-const CATEGORIES = ['Technology','Programming','Business','Case Competition','Innovation','Entrepreneurship','Design','Science','Olympiad','Other'];
-const EDUCATION_LEVELS = ['School','College','University','Graduate','Open to All'];
-const PRESET_BANNERS = [
-  'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80'
-];
 
 const CreateCompetitionPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const { competitions, createCompetition, updateCompetition, organizer } = useOrganizer();
+  const { competitions, organizer } = useOrganizer();
+  const { createCompetition, updateCompetition } = useCompetitionController();
 
   const isEditing = Boolean(id);
   const startInPreview = searchParams.get('preview') === 'true';
   const [currentStep, setCurrentStep] = useState(startInPreview ? 5 : 1);
 
-  const [formData, setFormData] = useState({
-    title: '', category: 'Technology', shortDescription: '', fullDescription: '',
-    banner: PRESET_BANNERS[0], thumbnail: PRESET_BANNERS[0],
-    educationLevels: ['University', 'College'], participationType: 'Team',
-    minTeamSize: '2', maxTeamSize: '5', eligibilityRules: '',
-    registrationOpens: '', registrationDeadline: '', eventDate: '',
-    eventType: 'Online', locationInfo: '',
-    prizes: '1st Place: ৳1,00,000 + Incubation Support\n2nd Place: ৳50,000\n3rd Place: ৳25,000',
-    rules: '1. All code and designs must be created during the competition window.\n2. Open source tooling and libraries are permitted.\n3. Respect intellectual property and event guidelines.',
-    timelineText: 'August 1 - Registration Opens\nSeptember 15 - Deadline\nOctober 1 - Results',
-    registrationUrl: '', contactEmail: organizer.email || 'hello@yourorg.com', additionalContact: ''
-  });
+  // Lazy init: prefill from the existing competition in edit mode, empty form otherwise.
+  // The route keys this page by :id (see App.jsx), so a new id remounts and re-prefills.
+  const [formData, setFormData] = useState(() => getCompetitionForm(competitions, id, organizer.email));
 
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    if (id) {
-      const existing = competitions.find((c) => c.id === id);
-      if (existing) {
-        setFormData({
-          title: existing.title || '', category: existing.category || 'Technology',
-          shortDescription: existing.shortDescription || '', fullDescription: existing.fullDescription || '',
-          banner: existing.banner || PRESET_BANNERS[0], thumbnail: existing.thumbnail || PRESET_BANNERS[0],
-          educationLevels: existing.educationLevels || ['University'],
-          participationType: existing.participationType || 'Team',
-          minTeamSize: existing.minTeamSize ? String(existing.minTeamSize) : '2',
-          maxTeamSize: existing.maxTeamSize ? String(existing.maxTeamSize) : '5',
-          eligibilityRules: existing.eligibilityRules || '',
-          registrationOpens: existing.registrationOpens || '',
-          registrationDeadline: existing.deadline || '', eventDate: existing.eventDate || '',
-          eventType: existing.eventType || 'Online', locationInfo: existing.location || '',
-          prizes: existing.prizes || '', rules: existing.rules || '',
-          timelineText: Array.isArray(existing.timeline)
-            ? existing.timeline.map((t) => `${t.date} - ${t.stage}`).join('\n')
-            : (existing.timelineText || ''),
-          registrationUrl: existing.registrationUrl || '',
-          contactEmail: existing.contactEmail || organizer.email || '',
-          additionalContact: existing.additionalContact || ''
-        });
-      }
-    }
-  }, [id, competitions, organizer.email]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,33 +47,8 @@ const CreateCompetitionPage = () => {
     }));
   };
 
-  const parseTimeline = () => {
-    const lines = (formData.timelineText || '').split('\n').filter((l) => l.trim().length > 0);
-    if (lines.length === 0) {
-      return [
-        { stage: 'Registration Opens', date: formData.registrationOpens || 'TBA', desc: 'Call for registrations' },
-        { stage: 'Submission Deadline', date: formData.registrationDeadline || 'TBA', desc: 'Submissions close' },
-        { stage: 'Final Event', date: formData.eventDate || 'TBA', desc: 'Main competition day' }
-      ];
-    }
-    return lines.map((line) => {
-      const parts = line.split(/[-–—:]/);
-      if (parts.length > 1) return { date: parts[0].trim(), stage: parts.slice(1).join('-').trim(), desc: 'Key Milestone' };
-      return { date: 'Phase', stage: line.trim(), desc: 'Milestone' };
-    });
-  };
-
   const validateStep = (step) => {
-    const newErrors = {};
-    if (step === 1) {
-      if (!formData.title.trim()) newErrors.title = 'Competition title is required';
-      if (!formData.shortDescription.trim()) newErrors.shortDescription = 'Short description is required';
-    } else if (step === 3) {
-      if (!formData.registrationDeadline.trim()) newErrors.registrationDeadline = 'Registration deadline is required';
-      if (!formData.eventDate.trim()) newErrors.eventDate = 'Event date is required';
-    } else if (step === 4) {
-      if (!formData.contactEmail.trim()) newErrors.contactEmail = 'Contact email is required';
-    }
+    const newErrors = validateCompetitionStep(formData, step);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -125,24 +58,8 @@ const CreateCompetitionPage = () => {
   };
   const handlePrevStep = () => { setCurrentStep((prev) => Math.max(1, prev - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
-  const buildPayload = (status) => ({
-    title: formData.title || (status === 'Draft' ? 'Untitled Competition (Draft)' : ''),
-    category: formData.category, shortDescription: formData.shortDescription || 'Draft opportunity.',
-    fullDescription: formData.fullDescription, banner: formData.banner,
-    thumbnail: formData.thumbnail || formData.banner,
-    educationLevels: formData.educationLevels, participationType: formData.participationType,
-    minTeamSize: parseInt(formData.minTeamSize, 10) || 1, maxTeamSize: parseInt(formData.maxTeamSize, 10) || 1,
-    eligibilityRules: formData.eligibilityRules, registrationOpens: formData.registrationOpens,
-    deadline: formData.registrationDeadline || (status === 'Draft' ? 'Draft' : 'Open'),
-    eventDate: formData.eventDate || (status === 'Draft' ? 'Draft' : 'TBA'),
-    eventType: formData.eventType, location: formData.locationInfo || formData.eventType,
-    prizes: formData.prizes, rules: formData.rules, timeline: parseTimeline(),
-    registrationUrl: formData.registrationUrl, contactEmail: formData.contactEmail,
-    additionalContact: formData.additionalContact
-  });
-
   const handleSaveDraft = () => {
-    const payload = buildPayload('Draft');
+    const payload = buildCompetitionPayload(formData, 'Draft');
     if (isEditing) updateCompetition(id, { ...payload, status: 'Draft' });
     else createCompetition(payload, 'Draft');
     navigate('/organizer/competitions');
@@ -150,7 +67,7 @@ const CreateCompetitionPage = () => {
 
   const handlePublish = () => {
     if (!formData.title.trim()) { setCurrentStep(1); setErrors({ title: 'Competition title is required to publish' }); return; }
-    const payload = buildPayload('Published');
+    const payload = buildCompetitionPayload(formData, 'Published');
     if (isEditing) updateCompetition(id, { ...payload, status: 'Published' });
     else createCompetition(payload, 'Published');
     navigate('/organizer/competitions');
@@ -589,7 +506,7 @@ const CreateCompetitionPage = () => {
                       <div>
                         <h3 className="font-display text-xl font-medium text-text-primary mb-4">Event Timeline</h3>
                         <div className="preview-timeline-steps-list space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
-                          {parseTimeline().map((item, idx) => (
+                          {buildTimeline(formData).map((item, idx) => (
                             <div key={idx} className="preview-timeline-step-item flex items-start gap-4 relative">
                               <div className="timeline-step-dot-badge w-6 h-6 rounded-full bg-accent text-text-primary flex items-center justify-center text-[10px] font-mono shrink-0 z-10 shadow-md">{idx + 1}</div>
                               <div className="bg-bg border border-border rounded-xl p-3.5 flex-1">

@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { useAuthContext } from "../../../models/contexts/AuthContext";
+import { useAuthController } from "../../../controllers/authController";
 
 const INTEREST_OPTIONS = ["Hackathon", "Business", "Programming", "Innovation"];
 
 export default function SignUpForm() {
   const navigate = useNavigate();
-  const { register, login } = useAuthContext();
+  const { signupParticipant } = useAuthController();
 
   const [formData, setFormData] = useState({
     fullname: "",
@@ -47,14 +47,10 @@ export default function SignUpForm() {
 
     setLoading(true);
     try {
-      const payload = { ...formData };
-      delete payload.confirmPassword;
-      await register("participant", payload);
-      // Register does not return a token (CSE2200 pattern) — log in right after
-      await login("participant", { email: payload.email, password: payload.password });
+      await signupParticipant(formData);
       navigate("/discover");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || err.message || "Registration failed");
     } finally {
       setLoading(false);
     }

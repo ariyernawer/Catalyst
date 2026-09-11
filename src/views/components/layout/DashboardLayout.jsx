@@ -1,5 +1,5 @@
 import { Navbar } from "./Navbar";
-import { useAuthContext } from "../../../models/contexts/AuthContext";
+import { useAuthContext } from "../../../models/contexts/useAuthContext";
 
 /**
  * Shell layout for all dashboard pages.

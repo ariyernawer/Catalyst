@@ -1,12 +1,17 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { useAuthContext } from './AuthContext';
+import { useState, useEffect } from 'react';
+import { useAuthContext } from './useAuthContext';
+import { OrganizerContext } from './contexts';
 import { INITIAL_ORGANIZER, INITIAL_COMPETITIONS } from '../data/organizerDefaults';
 
-const OrganizerContext = createContext(null);
-
+/**
+ * Model: organizer profile + competitions state manager.
+ * All orchestration (CRUD, profile flows, toasts) lives in
+ * controllers/competitionController.js and controllers/organizerController.js.
+ * Views read state via useOrganizer and dispatch through the controllers.
+ */
 export const OrganizerProvider = ({ children }) => {
   // Authentication state comes from the shared AuthContext (httpOnly cookie based)
-  const { user, role, logout: authLogout } = useAuthContext();
+  const { user, role } = useAuthContext();
   const isAuthenticated = role === 'organizer' && !!user;
 
   // Organizer Profile State (seeded from the authenticated organizer when available)
@@ -40,98 +45,7 @@ export const OrganizerProvider = ({ children }) => {
     }, 3500);
   };
 
-  // CRUD Operations
-  const createCompetition = (data, status = 'Draft') => {
-    const newComp = {
-      ...data,
-      id: `comp-${Date.now()}`,
-      status,
-      bookmarks: 0,
-      lastUpdated: 'Just now',
-      thumbnail: data.thumbnail || data.banner || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80',
-      banner: data.banner || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80'
-    };
-
-    setCompetitions(prev => [newComp, ...prev]);
-    showToast(status === 'Published' ? 'Competition published successfully!' : 'Competition saved as draft!');
-    return newComp;
-  };
-
-  const updateCompetition = (id, updatedFields) => {
-    setCompetitions(prev =>
-      prev.map(c => (c.id === id ? { ...c, ...updatedFields, lastUpdated: 'Just now' } : c))
-    );
-    showToast('Competition updated successfully!');
-  };
-
-  const deleteCompetition = (id) => {
-    setCompetitions(prev => prev.filter(c => c.id !== id));
-    showToast('Competition deleted.', 'info');
-  };
-
-  const toggleCompetitionStatus = (id, newStatus) => {
-    setCompetitions(prev =>
-      prev.map(c => (c.id === id ? { ...c, status: newStatus, lastUpdated: 'Just now' } : c))
-    );
-    showToast(`Status changed to ${newStatus}`);
-  };
-
-  const duplicateCompetition = (id) => {
-    const source = competitions.find(c => c.id === id);
-    if (!source) return;
-    const duplicated = {
-      ...source,
-      id: `comp-${Date.now()}`,
-      title: `${source.title} (Copy)`,
-      status: 'Draft',
-      bookmarks: 0,
-      lastUpdated: 'Just now'
-    };
-    setCompetitions(prev => [duplicated, ...prev]);
-    showToast('Competition duplicated as Draft!');
-  };
-
-  const updateProfile = (updatedProfile) => {
-    setOrganizer(prev => ({ ...prev, ...updatedProfile }));
-    showToast('Organization profile saved successfully!');
-  };
-
-  const registerOrganizer = (accountData) => {
-    const newOrg = {
-      ...organizer,
-      ...accountData,
-      organizationName: accountData.organizationName || organizer.organizationName || 'New Organization',
-      organizationType: accountData.organizationType || organizer.organizationType || 'Organization',
-      contactPerson: accountData.contactPerson || organizer.contactPerson || 'Contact Person',
-      name: accountData.contactPerson || organizer.name || 'Organizer',
-      phone: accountData.phone || '',
-      email: accountData.email || '',
-      website: accountData.website || '',
-      description: accountData.description || '',
-      verified: true
-    };
-    setOrganizer(newOrg);
-    showToast('Organizer application submitted and account created!');
-  };
-
-  const login = (organizerData) => {
-    if (organizerData) {
-      const updatedOrg = {
-        ...organizer,
-        ...organizerData,
-        name: organizerData.contactPerson || organizerData.name || organizer.name
-      };
-      setOrganizer(updatedOrg);
-    }
-    showToast('Signed in successfully!');
-  };
-
-  const logout = async () => {
-    await authLogout();
-    showToast('Signed out.', 'info');
-  };
-
-  // Calculated Stats
+  // Calculated Stats (pure derivation from state)
   const publishedCount = competitions.filter(c => c.status === 'Published').length;
   const draftCount = competitions.filter(c => c.status === 'Draft').length;
   const totalBookmarks = competitions.reduce((acc, c) => acc + (c.bookmarks || 0), 0);
@@ -147,17 +61,11 @@ export const OrganizerProvider = ({ children }) => {
         draftCount,
         totalBookmarks,
         upcomingEventsCount,
-        createCompetition,
-        updateCompetition,
-        deleteCompetition,
-        toggleCompetitionStatus,
-        duplicateCompetition,
-        updateProfile,
-        registerOrganizer,
-        login,
-        logout,
         toast,
-        showToast
+        showToast,
+        setOrganizer,
+        setCompetitions,
+        setToast
       }}
     >
       {children}
@@ -170,12 +78,4 @@ export const OrganizerProvider = ({ children }) => {
       )}
     </OrganizerContext.Provider>
   );
-};
-
-export const useOrganizer = () => {
-  const context = useContext(OrganizerContext);
-  if (!context) {
-    throw new Error('useOrganizer must be used within an OrganizerProvider');
-  }
-  return context;
 };

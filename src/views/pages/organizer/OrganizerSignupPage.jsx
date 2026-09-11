@@ -1,13 +1,13 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useOrganizer } from '../../../models/contexts/OrganizerContext';
-import { useAuthContext } from '../../../models/contexts/AuthContext';
+import { useAuthController } from '../../../controllers/authController';
+import { useOrganizerController } from '../../../controllers/organizerController';
 import { Building2 } from 'lucide-react';
 
 const OrganizerSignupPage = () => {
   const navigate = useNavigate();
-  const { registerOrganizer, login: organizerLogin } = useOrganizer();
-  const { register, login } = useAuthContext();
+  const { signupOrganizer, login } = useAuthController();
+  const { registerOrganizer, loginOrganizer } = useOrganizerController();
 
   const [mode, setMode] = useState('signup');
   const [formData, setFormData] = useState({
@@ -51,15 +51,11 @@ const OrganizerSignupPage = () => {
 
     setIsSubmitting(true);
     try {
-      const payload = { ...formData };
-      delete payload.confirmPassword;
-      await register('organizer', payload);
-      // Register does not return a token (CSE2200 pattern) — log in right after
-      const userData = await login('organizer', { email: payload.email, password: payload.password });
+      const userData = await signupOrganizer(formData);
       registerOrganizer(userData);
       navigate('/organizer');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || err.message || 'Registration failed');
     } finally {
       setIsSubmitting(false);
     }
@@ -71,10 +67,10 @@ const OrganizerSignupPage = () => {
     setIsSubmitting(true);
     try {
       const userData = await login('organizer', signInData);
-      organizerLogin(userData);
+      loginOrganizer(userData);
       navigate('/organizer');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || err.message || 'Login failed');
     } finally {
       setIsSubmitting(false);
     }

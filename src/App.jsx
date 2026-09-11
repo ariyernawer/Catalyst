@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import LandingPage from './views/pages/LandingPage';
 import SelectRolePage from './views/pages/auth/SelectRolePage';
 import SignInPage from './views/pages/auth/SignInPage';
@@ -16,6 +16,12 @@ import PrivateRoute from './controllers/utils/PrivateRoute';
 import PublicRoute from './controllers/utils/PublicRoute';
 import { OrganizerProvider } from './models/contexts/OrganizerContext';
 import OrganizerLayout from './views/components/layout/OrganizerLayout';
+
+// Keys the edit page by :id so a new id remounts the form (lazy-init prefill).
+function EditCompetitionRoute() {
+  const { id } = useParams();
+  return <CreateCompetitionPage key={id} />;
+}
 
 export default function App() {
   return (
@@ -93,7 +99,7 @@ export default function App() {
             path="/organizer/competitions/edit/:id"
             element={
               <OrganizerLayout>
-                <CreateCompetitionPage />
+                <EditCompetitionRoute />
               </OrganizerLayout>
             }
           />

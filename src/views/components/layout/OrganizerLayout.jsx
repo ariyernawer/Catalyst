@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useOrganizer } from '../../../models/contexts/OrganizerContext';
+import { useOrganizer } from '../../../models/contexts/useOrganizer';
+import { useOrganizerController } from '../../../controllers/organizerController';
 import {
   LayoutDashboard,
   Trophy,
@@ -17,7 +18,8 @@ import {
 const OrganizerLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { organizer, logout } = useOrganizer();
+  const { organizer } = useOrganizer();
+  const { logoutOrganizer } = useOrganizerController();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -33,7 +35,7 @@ const OrganizerLayout = ({ children }) => {
     return location.pathname.startsWith(item.path);
   };
 
-  const handleSignOut = () => { logout(); navigate('/'); };
+  const handleSignOut = () => { logoutOrganizer(); navigate('/'); };
 
   return (
     <div className="organizer-app-page-shell flex flex-col antialiased font-body min-h-screen bg-bg text-text-primary">
