@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { CompetitionGrid } from "../../components/discover/CompetitionGrid";
 import { DashboardLayout } from "../../components/layout/DashboardLayout";
-import { DEMO_USER } from "../../../models/data/demoUser";
 import { MOCK_COMPETITIONS } from "../../../models/data/mockCompetitions";
+import { useAuthContext } from "../../../models/contexts/useAuthContext";
 
 const savedCompetitions = MOCK_COMPETITIONS.filter(
   (competition) => competition.isBookmarked
@@ -10,6 +10,7 @@ const savedCompetitions = MOCK_COMPETITIONS.filter(
 
 export default function SavedItemsPage() {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goToPage = (id) => {
     if (id === "bookmarks") return navigate("/saved");
@@ -23,10 +24,9 @@ export default function SavedItemsPage() {
       activeNavId="bookmarks"
       onNavigate={goToPage}
       bookmarkCount={savedCompetitions.length}
-      user={DEMO_USER}
+      user={user}
       pageTitle="Saved items"
       pageSubtitle="Competitions saved for later"
-      notificationCount={3}
     >
       <CompetitionGrid competitions={savedCompetitions} />
     </DashboardLayout>

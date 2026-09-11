@@ -2,15 +2,22 @@ import { AlarmClock, CalendarDays, CheckCircle2, Clock3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CountdownTimer } from "../../components/discover/CountdownTimer";
 import { DashboardLayout } from "../../components/layout/DashboardLayout";
-import { DEMO_USER } from "../../../models/data/demoUser";
 import { MOCK_COMPETITIONS } from "../../../models/data/mockCompetitions";
+import { useAuthContext } from "../../../models/contexts/useAuthContext";
+import { getTimeRemaining } from "../../../controllers/utils/countdown";
 
 const savedCompetitions = MOCK_COMPETITIONS.filter(
   (competition) => competition.isBookmarked
 );
 
+const dueThisWeek = MOCK_COMPETITIONS.filter((c) => {
+  const { days, isPast } = getTimeRemaining(c.deadline);
+  return !isPast && days <= 7;
+}).length;
+
 export default function UpcomingPage() {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goToPage = (id) => {
     if (id === "bookmarks") return navigate("/saved");
@@ -24,10 +31,9 @@ export default function UpcomingPage() {
       activeNavId="upcoming"
       onNavigate={goToPage}
       bookmarkCount={savedCompetitions.length}
-      user={DEMO_USER}
+      user={user}
       pageTitle="Upcoming deadlines"
       pageSubtitle="A simple view of competition closing dates"
-      notificationCount={3}
     >
       <div className="space-y-6">
         {/* Alert banner */}
@@ -50,11 +56,11 @@ export default function UpcomingPage() {
           </div>
         </section>
 
-        //Stats row 
+        {/* Stats row */} 
         <section className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl bg-surface p-4">
             <Clock3 className="text-danger" size={19} />
-            <p className="mt-4 font-display text-3xl font-bold text-text-primary">2</p>
+            <p className="mt-4 font-display text-3xl font-bold text-text-primary">{dueThisWeek}</p>
             <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">
               Due this week
             </p>
@@ -81,7 +87,7 @@ export default function UpcomingPage() {
           </div>
         </section>
 
-        //Competition list 
+        {/* Competition list */} 
         <section className="space-y-3">
           {MOCK_COMPETITIONS.map((competition) => (
             <article

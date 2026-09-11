@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const initial = fullname.charAt(0).toUpperCase();
 
   return (
-    <DashboardLayout activeNavId="profile" onNavigate={goToPage} bookmarkCount={savedCount} user={user} pageTitle="Your profile" pageSubtitle="Your participant account" notificationCount={3}>
+    <DashboardLayout activeNavId="profile" onNavigate={goToPage} bookmarkCount={savedCount} user={user} pageTitle="Your profile" pageSubtitle="Your participant account">
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.55fr]">
         <aside className="rounded-card border border-border bg-surface p-6 shadow-card sm:p-7">
           <div className="flex items-center gap-4">
@@ -34,7 +34,7 @@ export default function ProfilePage() {
               <p className="text-xs text-text-muted">Saved items</p>
             </div>
             <div className="rounded-2xl bg-bg p-3">
-              <p className="font-display text-2xl font-bold text-text-primary">12</p>
+              <p className="font-display text-2xl font-bold text-text-primary">0</p>
               <p className="text-xs text-text-muted">Applications</p>
             </div>
           </div>
