@@ -1,29 +1,28 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import SignUpPage from './pages/SignUp/SignUpPage';
-import { DiscoverPage } from './pages/Discover/DiscoverPage';
-import { SavedItemsPage } from './pages/Saved/SavedItemsPage';
-import { UpcomingPage } from './pages/Upcoming/UpcomingPage';
-import { ProfilePage } from './pages/Profile/ProfilePage';
-import SignInPage from './pages/SignIn/SignInPage';
-import Landing from './pages/Landing';
-import SelectRole from './pages/SelectRole';
-import PrivateRoute from './utils/PrivateRoute';
-import PublicRoute from './utils/PublicRoute';
-
-import { OrganizerProvider } from './context/OrganizerContext';
-import OrganizerLayout from './components/organizer/OrganizerLayout';
-import OrganizerDashboard from './pages/organizer/OrganizerDashboard';
-import MyCompetitions from './pages/organizer/MyCompetitions';
-import CreateCompetition from './pages/organizer/CreateCompetition';
-import OrganizationProfile from './pages/organizer/OrganizationProfile';
-import OrganizerSignup from './pages/organizer/OrganizerSignup';
+import LandingPage from './views/pages/LandingPage';
+import SelectRolePage from './views/pages/auth/SelectRolePage';
+import SignInPage from './views/pages/auth/SignInPage';
+import SignUpPage from './views/pages/auth/SignUpPage';
+import DiscoverPage from './views/pages/participant/DiscoverPage';
+import SavedItemsPage from './views/pages/participant/SavedItemsPage';
+import UpcomingPage from './views/pages/participant/UpcomingPage';
+import ProfilePage from './views/pages/participant/ProfilePage';
+import OrganizerSignupPage from './views/pages/organizer/OrganizerSignupPage';
+import OrganizerDashboardPage from './views/pages/organizer/OrganizerDashboardPage';
+import MyCompetitionsPage from './views/pages/organizer/MyCompetitionsPage';
+import CreateCompetitionPage from './views/pages/organizer/CreateCompetitionPage';
+import OrganizationProfilePage from './views/pages/organizer/OrganizationProfilePage';
+import PrivateRoute from './controllers/utils/PrivateRoute';
+import PublicRoute from './controllers/utils/PublicRoute';
+import { OrganizerProvider } from './models/contexts/OrganizerContext';
+import OrganizerLayout from './views/components/layout/OrganizerLayout';
 
 export default function App() {
   return (
     <OrganizerProvider>
       <Routes>
         {/* Root shows Landing page */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<LandingPage />} />
 
         {/* Public routes (redirect to dashboard when already logged in) */}
         <Route element={<PublicRoute />}>
@@ -43,9 +42,9 @@ export default function App() {
               </div>
             }
           />
-          <Route path="/select-role" element={<SelectRole />} />
-          <Route path="/organizer/signup" element={<OrganizerSignup />} />
-          <Route path="/organizer/login" element={<OrganizerSignup />} />
+          <Route path="/select-role" element={<SelectRolePage />} />
+          <Route path="/organizer/signup" element={<OrganizerSignupPage />} />
+          <Route path="/organizer/login" element={<OrganizerSignupPage />} />
         </Route>
 
         {/* Protected participant routes */}
@@ -62,7 +61,7 @@ export default function App() {
             path="/organizer"
             element={
               <OrganizerLayout>
-                <OrganizerDashboard />
+                <OrganizerDashboardPage />
               </OrganizerLayout>
             }
           />
@@ -70,7 +69,7 @@ export default function App() {
             path="/organizer/dashboard"
             element={
               <OrganizerLayout>
-                <OrganizerDashboard />
+                <OrganizerDashboardPage />
               </OrganizerLayout>
             }
           />
@@ -78,7 +77,7 @@ export default function App() {
             path="/organizer/competitions"
             element={
               <OrganizerLayout>
-                <MyCompetitions />
+                <MyCompetitionsPage />
               </OrganizerLayout>
             }
           />
@@ -86,7 +85,7 @@ export default function App() {
             path="/organizer/competitions/new"
             element={
               <OrganizerLayout>
-                <CreateCompetition />
+                <CreateCompetitionPage />
               </OrganizerLayout>
             }
           />
@@ -94,7 +93,7 @@ export default function App() {
             path="/organizer/competitions/edit/:id"
             element={
               <OrganizerLayout>
-                <CreateCompetition />
+                <CreateCompetitionPage />
               </OrganizerLayout>
             }
           />
@@ -102,7 +101,7 @@ export default function App() {
             path="/organizer/organization"
             element={
               <OrganizerLayout>
-                <OrganizationProfile />
+                <OrganizationProfilePage />
               </OrganizerLayout>
             }
           />

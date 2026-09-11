@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/*
+  Catalyst global stylesheet.
+  Single source of truth for the design system (Tailwind v4 theme tokens),
+  base styles, animations and shared semantic classes used across all roles
+  (guest, participant, organizer).
+*/
 
 @theme {
   --color-bg: #0c1519;
@@ -8,12 +14,14 @@
   --color-surface-raised: #3a3534;
 
   --color-border: #3a3534;
+  --color-border-subtle: #23343c;
 
   --color-accent: #724b39;
   --color-accent-hover: #8a5b45;
 
   --color-olive: #5c6b6e;
   --color-sand: #cf9d7b;
+  --color-sand-hover: #dcac8c;
 
   --color-text-primary: #e8dfd0;
   --color-text-secondary: #b9b0a5;
@@ -23,6 +31,9 @@
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
   --shadow-card: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
 
@@ -32,6 +43,16 @@
 @layer base {
   body {
     @apply bg-bg text-text-primary font-body antialiased;
+    color-scheme: dark;
+  }
+
+  input, textarea, select {
+    font-family: var(--font-body);
+    color: #e8dfd0;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #5c6b6e;
   }
 
   /* Keep every page's display headings aligned with the landing hero. */
@@ -57,6 +78,27 @@
   }
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c1519;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3534;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5c6b6e;
+}
+
+/* ---------- Animations ---------- */
+
 @keyframes slide-down {
   from { opacity: 0; transform: translateY(-10px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
@@ -74,15 +116,32 @@
   100% { transform: scale(1);    }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes category-carousel-scroll {
+  to { transform: translateX(calc(-50% - 0.5rem)); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
 .animate-slide-down { animation: slide-down 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-fade-up { animation: fade-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-heart-pop { animation: heart-pop 0.35s ease forwards; }
+.animate-fade-in { animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-scroll { animation: scroll 10s linear infinite; }
 
-@keyframes category-carousel-scroll {
-  to {
-    transform: translateX(calc(-50% - 0.5rem));
-  }
-}
+/* ---------- Landing carousel ---------- */
 
 .category-carousel {
   overflow: hidden;
@@ -107,6 +166,8 @@
   min-height: 10.25rem;
 }
 
+/* ---------- Discover cards ---------- */
+
 /* A subtle moving gradient ring gives Discover cards a clear interactive state. */
 .competition-card {
   isolation: isolate;
@@ -124,14 +185,42 @@
   animation: gradient-shift 2.8s ease infinite;
 }
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+/* ---------- Shared semantic classes ---------- */
+
+.page-container {
+  min-height: 100vh;
+  background-color: #0c1519;
+  color: #e8dfd0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.form-input {
+  width: 100%;
+  background-color: #0c1519;
+  border: 1px solid #3a3534;
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: #e8dfd0;
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #cf9d7b;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .competition-card:hover { animation: none; }
-  .category-carousel-track {
-    animation: none;
-  }
+  .category-carousel-track { animation: none; }
 }
