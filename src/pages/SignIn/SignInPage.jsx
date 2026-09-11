@@ -3,10 +3,11 @@ import { GraduationCap } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
-import API from "../../api/axios";
+import { useAuthContext } from "../../context/AuthContext";
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const { login } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,8 +18,7 @@ export default function SignInPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await API.post("/participant/login", { email, password });
-      localStorage.setItem("token", res.data.token);
+      await login("participant", { email, password });
       navigate("/discover");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

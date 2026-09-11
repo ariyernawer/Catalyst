@@ -4,6 +4,7 @@ import {
   Search, Bell, Menu, X, LogOut, ChevronRight,
 } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { useAuthContext } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
   { id: "discover",  label: "Discover",  icon: Compass,         desc: "Browse all competitions"  },
@@ -25,6 +26,8 @@ export function Navbar({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const { logout } = useAuthContext();
+  const displayName = user?.fullname || user?.name || "User";
 
   /* Close dropdown when clicking outside */
   useEffect(() => {
@@ -68,10 +71,10 @@ export function Navbar({
               {user && (
                 <div className="flex items-center gap-3 border-b border-border px-4 py-3.5">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sand text-sm font-bold text-bg">
-                    {user.name.charAt(0)}
+                    {displayName.charAt(0)}
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-text-primary">{user.name}</p>
+                    <p className="text-sm font-semibold text-text-primary">{displayName}</p>
                     <p className="text-xs text-text-muted">Participant account</p>
                   </div>
                 </div>
@@ -120,6 +123,7 @@ export function Navbar({
               <div className="border-t border-border p-2">
                 <button
                   type="button"
+                  onClick={() => { logout(); setIsMenuOpen(false); }}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-raised hover:text-text-primary"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-bg">
@@ -179,7 +183,7 @@ export function Navbar({
           {user && (
             <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-border bg-surface transition-colors hover:border-sand/50">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sand text-xs font-bold text-bg">
-                {user.name.charAt(0)}
+                {displayName.charAt(0)}
               </span>
             </div>
           )}

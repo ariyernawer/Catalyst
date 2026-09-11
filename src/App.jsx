@@ -7,6 +7,8 @@ import { ProfilePage } from './pages/Profile/ProfilePage';
 import SignInPage from './pages/SignIn/SignInPage';
 import Landing from './pages/Landing';
 import SelectRole from './pages/SelectRole';
+import PrivateRoute from './utils/PrivateRoute';
+import PublicRoute from './utils/PublicRoute';
 
 import { OrganizerProvider } from './context/OrganizerContext';
 import OrganizerLayout from './components/organizer/OrganizerLayout';
@@ -23,81 +25,88 @@ export default function App() {
         {/* Root shows Landing page */}
         <Route path="/" element={<Landing />} />
 
-        <Route
-          path="/signup"
-          element={
-            <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
-              <SignUpPage />
-            </div>
-          }
-        />
-        <Route
-          path="/signin"
-          element={
-            <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
-              <SignInPage />
-            </div>
-          }
-        />
-        <Route path="/discover" element={<DiscoverPage />} />
-        <Route path="/saved" element={<SavedItemsPage />} />
-        <Route path="/upcoming" element={<UpcomingPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/select-role" element={<SelectRole />} />
+        {/* Public routes (redirect to dashboard when already logged in) */}
+        <Route element={<PublicRoute />}>
+          <Route
+            path="/signup"
+            element={
+              <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
+                <SignUpPage />
+              </div>
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
+                <SignInPage />
+              </div>
+            }
+          />
+          <Route path="/select-role" element={<SelectRole />} />
+          <Route path="/organizer/signup" element={<OrganizerSignup />} />
+          <Route path="/organizer/login" element={<OrganizerSignup />} />
+        </Route>
 
-        {/* Organizer auth (separate paths so they don't collide with /signup and /signin above) */}
-        <Route path="/organizer/signup" element={<OrganizerSignup />} />
-        <Route path="/organizer/login" element={<OrganizerSignup />} />
+        {/* Protected participant routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/saved" element={<SavedItemsPage />} />
+          <Route path="/upcoming" element={<UpcomingPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
 
-        {/* Organizer Dashboard & Pages */}
-        <Route
-          path="/organizer"
-          element={
-            <OrganizerLayout>
-              <OrganizerDashboard />
-            </OrganizerLayout>
-          }
-        />
-        <Route
-          path="/organizer/dashboard"
-          element={
-            <OrganizerLayout>
-              <OrganizerDashboard />
-            </OrganizerLayout>
-          }
-        />
-        <Route
-          path="/organizer/competitions"
-          element={
-            <OrganizerLayout>
-              <MyCompetitions />
-            </OrganizerLayout>
-          }
-        />
-        <Route
-          path="/organizer/competitions/new"
-          element={
-            <OrganizerLayout>
-              <CreateCompetition />
-            </OrganizerLayout>
-          }
-        />
-        <Route
-          path="/organizer/competitions/edit/:id"
-          element={
-            <OrganizerLayout>
-              <CreateCompetition />
-            </OrganizerLayout>
-          }
-        />
-        <Route
-          path="/organizer/organization"
-          element={
-            <OrganizerLayout>
-              <OrganizationProfile />
-            </OrganizerLayout>
-          }
-        />
+        {/* Protected organizer routes */}
+        <Route element={<PrivateRoute />}>
+          <Route
+            path="/organizer"
+            element={
+              <OrganizerLayout>
+                <OrganizerDashboard />
+              </OrganizerLayout>
+            }
+          />
+          <Route
+            path="/organizer/dashboard"
+            element={
+              <OrganizerLayout>
+                <OrganizerDashboard />
+              </OrganizerLayout>
+            }
+          />
+          <Route
+            path="/organizer/competitions"
+            element={
+              <OrganizerLayout>
+                <MyCompetitions />
+              </OrganizerLayout>
+            }
+          />
+          <Route
+            path="/organizer/competitions/new"
+            element={
+              <OrganizerLayout>
+                <CreateCompetition />
+              </OrganizerLayout>
+            }
+          />
+          <Route
+            path="/organizer/competitions/edit/:id"
+            element={
+              <OrganizerLayout>
+                <CreateCompetition />
+              </OrganizerLayout>
+            }
+          />
+          <Route
+            path="/organizer/organization"
+            element={
+              <OrganizerLayout>
+                <OrganizationProfile />
+              </OrganizerLayout>
+            }
+          />
+        </Route>
 
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/signup" replace />} />

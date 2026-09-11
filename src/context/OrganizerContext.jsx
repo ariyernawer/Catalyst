@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuthContext } from './AuthContext';
 
 const INITIAL_ORGANIZER = {
   id: 'org_priya_01',
@@ -283,13 +284,11 @@ const INITIAL_COMPETITIONS = [
 const OrganizerContext = createContext(null);
 
 export const OrganizerProvider = ({ children }) => {
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const saved = localStorage.getItem('catalyst_organizer_auth');
-    return saved !== null ? JSON.parse(saved) : true; // default logged in for organizer experience
-  });
+  // Authentication state comes from the shared AuthContext (httpOnly cookie based)
+  const { user, role, logout: authLogout } = useAuthContext();
+  const isAuthenticated = role === 'organizer' && !!user;
 
-  // Organizer Profile State
+  // Organizer Profile State (seeded from the authenticated organizer when available)
   const [organizer, setOrganizer] = useState(() => {
     const saved = localStorage.getItem('catalyst_organizer_profile');
     return saved ? JSON.parse(saved) : INITIAL_ORGANIZER;
@@ -305,10 +304,6 @@ export const OrganizerProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
 
   // Sync to local storage
-  useEffect(() => {
-    localStorage.setItem('catalyst_organizer_auth', JSON.stringify(isAuthenticated));
-  }, [isAuthenticated]);
-
   useEffect(() => {
     localStorage.setItem('catalyst_organizer_profile', JSON.stringify(organizer));
   }, [organizer]);
@@ -380,7 +375,7 @@ export const OrganizerProvider = ({ children }) => {
     showToast('Organization profile saved successfully!');
   };
 
-  const registerOrganizer = (accountData, token) => {
+  const registerOrganizer = (accountData) => {
     const newOrg = {
       ...organizer,
       ...accountData,
@@ -394,15 +389,11 @@ export const OrganizerProvider = ({ children }) => {
       description: accountData.description || '',
       verified: true
     };
-    if (token) {
-      localStorage.setItem('organizer_token', token);
-    }
     setOrganizer(newOrg);
-    setIsAuthenticated(true);
     showToast('Organizer application submitted and account created!');
   };
 
-  const login = (organizerData, token) => {
+  const login = (organizerData) => {
     if (organizerData) {
       const updatedOrg = {
         ...organizer,
@@ -411,16 +402,11 @@ export const OrganizerProvider = ({ children }) => {
       };
       setOrganizer(updatedOrg);
     }
-    if (token) {
-      localStorage.setItem('organizer_token', token);
-    }
-    setIsAuthenticated(true);
     showToast('Signed in successfully!');
   };
 
-  const logout = () => {
-    localStorage.removeItem('organizer_token');
-    setIsAuthenticated(false);
+  const logout = async () => {
+    await authLogout();
     showToast('Signed out.', 'info');
   };
 
@@ -434,7 +420,6 @@ export const OrganizerProvider = ({ children }) => {
     <OrganizerContext.Provider
       value={{
         isAuthenticated,
-        setIsAuthenticated,
         organizer,
         competitions,
         publishedCount,

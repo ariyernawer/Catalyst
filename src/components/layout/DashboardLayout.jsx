@@ -1,4 +1,5 @@
 import { Navbar } from "./Navbar";
+import { useAuthContext } from "../../context/AuthContext";
 
 /**
  * Shell layout for all dashboard pages.
@@ -8,7 +9,7 @@ import { Navbar } from "./Navbar";
  * @param {string}   activeNavId
  * @param {Function} onNavigate
  * @param {number}   bookmarkCount
- * @param {object}   user               - { name: string }
+ * @param {object}   user               - { name: string } (fallback; real user comes from AuthContext)
  * @param {string}   pageTitle
  * @param {string}   pageSubtitle
  * @param {number}   notificationCount
@@ -24,13 +25,16 @@ export function DashboardLayout({
   notificationCount = 0,
   children,
 }) {
+  const { user: authUser } = useAuthContext();
+  const displayUser = authUser || user;
+
   return (
     <div className="min-h-screen bg-bg">
       <Navbar
         activeId={activeNavId}
         onNavigate={onNavigate}
         bookmarkCount={bookmarkCount}
-        user={user}
+        user={displayUser}
         notificationCount={notificationCount}
       />
 

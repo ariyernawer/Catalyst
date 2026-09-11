@@ -34,7 +34,7 @@ function SelectRole() {
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
-            onClick={() => navigate("/participant")}
+            onClick={() => navigate("/signup")}
             className="border border-white/15 rounded-2xl p-6 text-left hover:border-sand transition-colors"
             style={{ background: "rgba(255, 255, 255, 0.03)" }}
           >
@@ -74,7 +74,7 @@ function SelectRole() {
         <p className="text-center text-text-muted text-sm mt-6">
           Already have an account?{" "}
           <button
-            onClick={() => navigate("/participant")}
+            onClick={() => navigate("/signin")}
             className="text-text-secondary hover:text-text-primary"
           >
             Sign in

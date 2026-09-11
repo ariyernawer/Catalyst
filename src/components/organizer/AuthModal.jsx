@@ -1,12 +1,13 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrganizer } from '../../context/OrganizerContext';
+import { useAuthContext } from '../../context/AuthContext';
 import { Building2, X } from 'lucide-react';
-import API from '../../api/axios';
 
 export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) => {
   const navigate = useNavigate();
-  const { registerOrganizer, login } = useOrganizer();
+  const { registerOrganizer, login: organizerLogin } = useOrganizer();
+  const { register, login } = useAuthContext();
 
   const [mode, setMode] = useState(initialMode);
   const [formData, setFormData] = useState({
@@ -53,8 +54,10 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
     setIsSubmitting(true);
     try {
       const { confirmPassword, ...payload } = formData;
-      const res = await API.post('/organizer/register', payload);
-      registerOrganizer(res.data.organizer || payload, res.data.token);
+      await register('organizer', payload);
+      // Register does not return a token (CSE2200 pattern) — log in right after
+      const userData = await login('organizer', { email: payload.email, password: payload.password });
+      registerOrganizer(userData);
       handleClose();
       navigate('/organizer');
     } catch (err) {
@@ -69,8 +72,8 @@ export const AuthModal = ({ isOpen = true, onClose, initialMode = 'signup' }) =>
     setError('');
     setIsSubmitting(true);
     try {
-      const res = await API.post('/organizer/login', signInData);
-      login(res.data.organizer, res.data.token);
+      const userData = await login('organizer', signInData);
+      organizerLogin(userData);
       handleClose();
       navigate('/organizer');
     } catch (err) {
