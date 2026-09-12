@@ -12,6 +12,11 @@ export default function OrganizerDashboardPage() {
 
   const formatStat = (num) => (num < 10 ? `0${num}` : `${num}`);
 
+  const greetingName = organizer.contactPerson?.split(' ')[0] || organizer.name?.split(' ')[0] || organizer.organizationName || 'Organizer';
+
+  // Dynamic top competition or clean state
+  const topCompetition = competitions.find(c => c.status === 'Published' && (c.bookmarks || 0) > 0) || competitions[0];
+
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Welcome Hero Card */}
@@ -21,10 +26,10 @@ export default function OrganizerDashboardPage() {
             ORGANIZER DASHBOARD
           </p>
           <h1 className="font-display text-3xl sm:text-4xl text-text-primary font-normal tracking-tight mt-1">
-            Welcome back, <em className="italic font-normal">{organizer.contactPerson?.split(' ')[0] || 'Priya'}.</em>
+            Welcome back, <em className="italic font-normal">{greetingName}.</em>
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary mt-1.5 max-w-xl">
-            Create opportunities. Reach over 180,000+ ambitious student innovators worldwide.
+            Create opportunities. Reach ambitious student innovators worldwide.
           </p>
         </div>
 
@@ -39,8 +44,8 @@ export default function OrganizerDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <StatCard variant="detailed" icon={Trophy} label="Published" value={formatStat(publishedCount)} subNote="+2 this season" />
-        <StatCard variant="detailed" icon={FileText} label="Drafts" value={formatStat(draftCount)} subNote="Ready to publish" />
+        <StatCard variant="detailed" icon={Trophy} label="Published" value={formatStat(publishedCount)} subNote={`${publishedCount} active`} />
+        <StatCard variant="detailed" icon={FileText} label="Drafts" value={formatStat(draftCount)} subNote={draftCount > 0 ? "Ready to publish" : "No drafts"} />
         <StatCard
           variant="detailed"
           icon={Bookmark}
@@ -48,7 +53,7 @@ export default function OrganizerDashboardPage() {
           value={totalBookmarks > 1000 ? `${(totalBookmarks / 1000).toFixed(1)}k` : totalBookmarks}
           subNote="Across all competitions"
         />
-        <StatCard variant="detailed" icon={Calendar} label="Upcoming Events" value={formatStat(upcomingEventsCount)} subNote="3 closing soon" />
+        <StatCard variant="detailed" icon={Calendar} label="Upcoming Events" value={formatStat(upcomingEventsCount)} subNote={`${upcomingEventsCount} scheduled`} />
       </div>
 
       {/* Engagement Trending Info Banner */}
@@ -58,12 +63,25 @@ export default function OrganizerDashboardPage() {
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-sm font-medium text-text-primary">
-              InnoSpark Hackathon gained <span className="font-semibold text-sand">+47 bookmarks</span> this week
-            </p>
-            <p className="text-xs text-text-secondary">
-              Your most-bookmarked active competition
-            </p>
+            {topCompetition ? (
+              <>
+                <p className="text-sm font-medium text-text-primary">
+                  {topCompetition.title} has <span className="font-semibold text-sand">{topCompetition.bookmarks || 0} bookmarks</span>
+                </p>
+                <p className="text-xs text-text-secondary">
+                  {topCompetition.category} · {topCompetition.eventType || 'Online'}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-text-primary">
+                  Ready to launch your next opportunity?
+                </p>
+                <p className="text-xs text-text-secondary">
+                  Create and publish a competition to start receiving bookmarks from students.
+                </p>
+              </>
+            )}
           </div>
         </div>
 

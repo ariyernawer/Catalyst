@@ -9,7 +9,7 @@ const OrganizationProfilePage = () => {
 
   const [formData, setFormData] = useState({
     organizationName: organizer.organizationName || '',
-    organizationType: organizer.organizationType || '',
+    organizationType: organizer.organizationType || 'Non-Profit Organization',
     contactPerson: organizer.contactPerson || '',
     role: organizer.role || '',
     description: organizer.description || '',
@@ -21,7 +21,7 @@ const OrganizationProfilePage = () => {
     email: organizer.email || '',
     phone: organizer.phone || '',
     location: organizer.location || '',
-    avatar: organizer.avatar || 'P'
+    avatar: organizer.avatar || organizer.name?.[0] || organizer.organizationName?.[0] || 'O'
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -36,6 +36,8 @@ const OrganizationProfilePage = () => {
     setIsSaving(true);
     setTimeout(() => { updateOrganizationProfile(formData); setIsSaving(false); }, 400);
   };
+
+  const avatarInitial = formData.avatar || formData.contactPerson?.[0] || formData.organizationName?.[0] || 'O';
 
   return (
     <div className="org-profile-page-wrapper space-y-8 animate-fade-in pb-12 max-w-5xl">
@@ -55,21 +57,21 @@ const OrganizationProfilePage = () => {
       {/* Org Verification Trust Banner */}
       <div className="org-trust-verification-banner bg-surface border border-border rounded-card text-text-primary p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-card">
         <div className="org-banner-left-identity flex items-start gap-4">
-          <div className="org-avatar-display-circle w-12 h-12 rounded-2xl bg-sand text-bg flex items-center justify-center font-display text-xl font-bold shrink-0 shadow-md">{formData.avatar || 'P'}</div>
+          <div className="org-avatar-display-circle w-12 h-12 rounded-2xl bg-sand text-bg flex items-center justify-center font-display text-xl font-bold shrink-0 shadow-md">{avatarInitial}</div>
           <div className="org-identity-info-block">
             <div className="org-name-verified-row flex items-center gap-2">
-              <h2 className="org-display-name-heading text-lg font-semibold text-text-primary">{formData.organizationName}</h2>
+              <h2 className="org-display-name-heading text-lg font-semibold text-text-primary">{formData.organizationName || 'Organization'}</h2>
               <span className="org-verified-badge-pill inline-flex items-center gap-1 bg-sand/20 text-sand text-[10px] font-semibold px-2.5 py-0.5 rounded-full border border-sand/30">
                 <ShieldCheck className="w-3 h-3" />Verified Organizer
               </span>
             </div>
-            <p className="org-type-member-text text-xs text-text-secondary mt-1">{formData.organizationType} · Member since {organizer.memberSince || '2024'}</p>
+            <p className="org-type-member-text text-xs text-text-secondary mt-1">{formData.organizationType} · Member since {organizer.memberSince || '2025'}</p>
           </div>
         </div>
         <div className="org-banner-stats-block flex items-center gap-6 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6 text-xs">
           <div className="org-stat-reach-column">
             <p className="text-text-secondary uppercase text-[10px] font-semibold">Total Reach</p>
-            <p className="text-text-primary font-display text-lg">{organizer.totalReach || '180,000+'}</p>
+            <p className="text-text-primary font-display text-lg">{organizer.totalReach || '0'}</p>
           </div>
           <div className="org-stat-competitions-column">
             <p className="text-text-secondary uppercase text-[10px] font-semibold">Competitions</p>
@@ -105,7 +107,7 @@ const OrganizationProfilePage = () => {
           </div>
           <div className="form-field-input-group">
             <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">ORGANIZATION DESCRIPTION & MISSION</label>
-            <textarea name="description" rows={4} value={formData.description} onChange={handleChange} className="form-textarea w-full px-4 py-3 bg-bg border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-sand" />
+            <textarea name="description" rows={4} value={formData.description} onChange={handleChange} placeholder="Describe your organization's mission and purpose..." className="form-textarea w-full px-4 py-3 bg-bg border border-border rounded-xl text-sm text-text-primary focus:outline-none focus:border-sand" />
           </div>
         </div>
 
@@ -119,21 +121,21 @@ const OrganizationProfilePage = () => {
             <div className="form-field-input-group">
               <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">OFFICIAL WEBSITE</label>
               <div className="field-icon-input-wrapper relative">
-                <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder="https://innovatehub.org" className="form-input w-full pl-10 pr-4 py-2.5 text-sm" />
+                <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder="https://yourorganization.org" className="form-input w-full pl-10 pr-4 py-2.5 text-sm" />
                 <Globe className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
               </div>
             </div>
             <div className="form-field-input-group">
               <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">LINKEDIN PAGE</label>
-              <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="https://linkedin.com/company/innovatehub" className="form-input w-full px-4 py-2.5 text-sm" />
+              <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="https://linkedin.com/company/yourorg" className="form-input w-full px-4 py-2.5 text-sm" />
             </div>
             <div className="form-field-input-group">
               <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">FACEBOOK PAGE</label>
-              <input type="text" name="facebook" value={formData.facebook} onChange={handleChange} placeholder="https://facebook.com/innovatehub" className="form-input w-full px-4 py-2.5 text-sm" />
+              <input type="text" name="facebook" value={formData.facebook} onChange={handleChange} placeholder="https://facebook.com/yourorg" className="form-input w-full px-4 py-2.5 text-sm" />
             </div>
             <div className="form-field-input-group">
               <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">INSTAGRAM PROFILE</label>
-              <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/innovatehub" className="form-input w-full px-4 py-2.5 text-sm" />
+              <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="https://instagram.com/yourorg" className="form-input w-full px-4 py-2.5 text-sm" />
             </div>
           </div>
         </div>
@@ -166,7 +168,7 @@ const OrganizationProfilePage = () => {
             <div className="form-field-input-group">
               <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">HEADQUARTERS / LOCATION</label>
               <div className="field-icon-input-wrapper relative">
-                <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Dhaka, Bangladesh" className="form-input w-full pl-10 pr-4 py-2.5 text-sm" />
+                <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Dhaka, Bangladesh" className="form-input w-full pl-10 pr-4 py-2.5 text-sm" />
                 <MapPin className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
               </div>
             </div>

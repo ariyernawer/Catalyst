@@ -50,7 +50,7 @@ export function CompetitionsTable({
     } else if (sortBy === "title") {
       list = [...list].sort((a, b) => a.title.localeCompare(b.title));
     } else {
-      list = [...list].sort((a, b) => b.id.localeCompare(a.id));
+      list = [...list].sort((a, b) => (b.id || b._id || '').localeCompare(a.id || a._id || ''));
     }
     return list;
   }, [competitions, searchQuery, statusFilter, categoryFilter, sortBy]);
@@ -128,8 +128,14 @@ export function CompetitionsTable({
       </div>
 
       {/* Competitions Table */}
-      <div className="bg-surface border border-border rounded-card overflow-hidden shadow-card">
-        <div className="overflow-x-auto">
+      <div className="bg-surface border border-border rounded-card shadow-card relative">
+        {openActionId && (
+          <div
+            className="fixed inset-0 z-30 bg-transparent"
+            onClick={() => setOpenActionId(null)}
+          />
+        )}
+        <div className="overflow-x-auto min-h-[380px] rounded-card pb-36">
           <table className="w-full text-left text-xs">
             <thead className="bg-bg border-b border-border text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
               <tr>
@@ -151,128 +157,134 @@ export function CompetitionsTable({
                   </td>
                 </tr>
               ) : (
-                filteredCompetitions.map((comp) => (
-                  <tr key={comp.id} className="hover:bg-surface-raised/40 transition-colors group">
-                    <td className="py-4 px-5">
-                      <div className="flex items-center gap-3.5">
-                        <img
-                          src={comp.thumbnail || DEFAULT_THUMBNAIL}
-                          alt={comp.title}
-                          className="w-11 h-11 rounded-xl object-cover border border-border shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <Link
-                            to={`/organizer/competitions/edit/${comp.id}`}
-                            className="font-medium text-text-primary hover:text-sand text-sm truncate block transition-colors"
-                          >
-                            {comp.title}
-                          </Link>
-                          <p className="text-xs text-text-muted mt-0.5">
-                            {comp.category} · {comp.eventType || "Online"}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="py-4 px-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${statusBadge(comp.status)}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${statusDot(comp.status)}`} />
-                        {comp.status}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4 text-text-primary whitespace-nowrap">{comp.deadline || "TBA"}</td>
-                    <td className="py-4 px-4 text-text-primary whitespace-nowrap">{comp.eventDate || "TBA"}</td>
-
-                    <td className="py-4 px-4 text-text-primary whitespace-nowrap font-medium">
-                      <span className="inline-flex items-center gap-1">
-                        <Bookmark className="w-3.5 h-3.5 text-sand" />
-                        {comp.bookmarks || 0}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-5 text-right relative whitespace-nowrap">
-                      <div className="relative inline-block">
-                        <button
-                          type="button"
-                          onClick={() => setOpenActionId(openActionId === comp.id ? null : comp.id)}
-                          className="w-8 h-8 rounded-lg hover:bg-surface-raised flex items-center justify-center text-text-secondary hover:text-white cursor-pointer"
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-
-                        {openActionId === comp.id && (
-                          <div
-                            className="absolute right-0 top-9 w-44 bg-surface border border-border rounded-xl shadow-2xl z-20 py-1.5 text-left text-xs animate-fade-in"
-                            onMouseLeave={() => setOpenActionId(null)}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => { setOpenActionId(null); navigate(`/organizer/competitions/edit/${comp.id}`); }}
-                              className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
+                filteredCompetitions.map((comp, idx) => {
+                  const compId = comp.id || comp._id;
+                  // Only open upward if it's the last item in a list with more than 2 items
+                  const openUpward = filteredCompetitions.length > 2 && idx === filteredCompetitions.length - 1;
+                  return (
+                    <tr key={compId} className="hover:bg-surface-raised/40 transition-colors group">
+                      <td className="py-4 px-5">
+                        <div className="flex items-center gap-3.5">
+                          <img
+                            src={comp.thumbnail || DEFAULT_THUMBNAIL}
+                            alt={comp.title}
+                            className="w-11 h-11 rounded-xl object-cover border border-border shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <Link
+                              to={`/organizer/competitions/edit/${compId}`}
+                              className="font-medium text-text-primary hover:text-sand text-sm truncate block transition-colors"
                             >
-                              <Edit className="w-3.5 h-3.5 text-sand" /><span>Edit Details</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setOpenActionId(null); navigate(`/organizer/competitions/edit/${comp.id}?preview=true`); }}
-                              className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
-                            >
-                              <Eye className="w-3.5 h-3.5 text-text-secondary" /><span>View Participant Preview</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setOpenActionId(null); duplicateCompetition(comp.id); }}
-                              className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
-                            >
-                              <Copy className="w-3.5 h-3.5 text-text-secondary" /><span>Duplicate</span>
-                            </button>
-
-                            <div className="border-t border-border my-1" />
-
-                            {comp.status !== "Published" && (
-                              <button
-                                type="button"
-                                onClick={() => { setOpenActionId(null); toggleCompetitionStatus(comp.id, "Published"); }}
-                                className="w-full px-3.5 py-2 flex items-center gap-2 text-sand hover:bg-surface-raised cursor-pointer"
-                              >
-                                <CheckCircle2 className="w-3.5 h-3.5" /><span>Publish Now</span>
-                              </button>
-                            )}
-                            {comp.status !== "Draft" && (
-                              <button
-                                type="button"
-                                onClick={() => { setOpenActionId(null); toggleCompetitionStatus(comp.id, "Draft"); }}
-                                className="w-full px-3.5 py-2 flex items-center gap-2 text-text-secondary hover:bg-surface-raised cursor-pointer"
-                              >
-                                <Clock className="w-3.5 h-3.5" /><span>Revert to Draft</span>
-                              </button>
-                            )}
-                            {comp.status !== "Closed" && (
-                              <button
-                                type="button"
-                                onClick={() => { setOpenActionId(null); toggleCompetitionStatus(comp.id, "Closed"); }}
-                                className="w-full px-3.5 py-2 flex items-center gap-2 text-text-muted hover:bg-surface-raised cursor-pointer"
-                              >
-                                <Archive className="w-3.5 h-3.5" /><span>Close</span>
-                              </button>
-                            )}
-
-                            <div className="border-t border-border my-1" />
-
-                            <button
-                              type="button"
-                              onClick={() => { setOpenActionId(null); if (window.confirm(`Delete "${comp.title}"?`)) deleteCompetition(comp.id); }}
-                              className="w-full px-3.5 py-2 flex items-center gap-2 text-danger hover:bg-red-950/40 cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" /><span>Delete Competition</span>
-                            </button>
+                              {comp.title}
+                            </Link>
+                            <p className="text-xs text-text-muted mt-0.5">
+                              {comp.category} · {comp.eventType || "Online"}
+                            </p>
                           </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${statusBadge(comp.status)}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusDot(comp.status)}`} />
+                          {comp.status}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-4 text-text-primary whitespace-nowrap">{comp.deadline || "TBA"}</td>
+                      <td className="py-4 px-4 text-text-primary whitespace-nowrap">{comp.eventDate || "TBA"}</td>
+
+                      <td className="py-4 px-4 text-text-primary whitespace-nowrap font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          <Bookmark className="w-3.5 h-3.5 text-sand" />
+                          {comp.bookmarks || 0}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-5 text-right relative whitespace-nowrap">
+                        <div className="relative inline-block">
+                          <button
+                            type="button"
+                            onClick={() => setOpenActionId(openActionId === compId ? null : compId)}
+                            className="w-8 h-8 rounded-lg hover:bg-surface-raised flex items-center justify-center text-text-secondary hover:text-white cursor-pointer"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+
+                          {openActionId === compId && (
+                            <div
+                              className={`absolute right-0 w-48 bg-surface border border-border rounded-xl shadow-2xl z-40 py-1.5 text-left text-xs animate-fade-in ${
+                                openUpward ? 'bottom-full mb-1.5 origin-bottom-right' : 'top-full mt-1.5 origin-top-right'
+                              }`}
+                            >
+                              <button
+                                type="button"
+                                onClick={() => { setOpenActionId(null); navigate(`/organizer/competitions/edit/${compId}`); }}
+                                className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
+                              >
+                                <Edit className="w-3.5 h-3.5 text-sand" /><span>Edit Details</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { setOpenActionId(null); navigate(`/organizer/competitions/edit/${compId}?preview=true`); }}
+                                className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-text-secondary" /><span>View Participant Preview</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { setOpenActionId(null); duplicateCompetition(compId); }}
+                                className="w-full px-3.5 py-2 flex items-center gap-2 text-text-primary hover:bg-surface-raised cursor-pointer"
+                              >
+                                <Copy className="w-3.5 h-3.5 text-text-secondary" /><span>Duplicate</span>
+                              </button>
+
+                              <div className="border-t border-border my-1" />
+
+                              {comp.status !== "Published" && (
+                                <button
+                                  type="button"
+                                  onClick={() => { setOpenActionId(null); toggleCompetitionStatus(compId, "Published"); }}
+                                  className="w-full px-3.5 py-2 flex items-center gap-2 text-sand hover:bg-surface-raised cursor-pointer"
+                                >
+                                  <CheckCircle2 className="w-3.5 h-3.5" /><span>Publish Now</span>
+                                </button>
+                              )}
+                              {comp.status !== "Draft" && (
+                                <button
+                                  type="button"
+                                  onClick={() => { setOpenActionId(null); toggleCompetitionStatus(compId, "Draft"); }}
+                                  className="w-full px-3.5 py-2 flex items-center gap-2 text-text-secondary hover:bg-surface-raised cursor-pointer"
+                                >
+                                  <Clock className="w-3.5 h-3.5" /><span>Revert to Draft</span>
+                                </button>
+                              )}
+                              {comp.status !== "Closed" && (
+                                <button
+                                  type="button"
+                                  onClick={() => { setOpenActionId(null); toggleCompetitionStatus(compId, "Closed"); }}
+                                  className="w-full px-3.5 py-2 flex items-center gap-2 text-text-muted hover:bg-surface-raised cursor-pointer"
+                                >
+                                  <Archive className="w-3.5 h-3.5" /><span>Close</span>
+                                </button>
+                              )}
+
+                              <div className="border-t border-border my-1" />
+
+                              <button
+                                type="button"
+                                onClick={() => { setOpenActionId(null); if (window.confirm(`Delete "${comp.title}"?`)) deleteCompetition(compId); }}
+                                className="w-full px-3.5 py-2 flex items-center gap-2 text-danger hover:bg-red-950/40 cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" /><span>Delete Competition</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

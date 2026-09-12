@@ -1,9 +1,10 @@
 import { useOrganizer } from "../models/contexts/useOrganizer";
+import { competitionApi } from "../models/api/competitionApi";
 
 /**
  * Controller: competition CRUD + form helpers.
  * Pure helpers (constants, payload builders, validation) are exported for views;
- * the hook exposes state-mutating actions. Views never mutate state directly.
+ * the hook exposes state-mutating actions connected to MongoDB backend.
  */
 
 export const CATEGORIES = ['Technology','Programming','Business','Case Competition','Innovation','Entrepreneurship','Design','Science','Olympiad','Other'];
@@ -41,33 +42,34 @@ export function buildTimeline(formData) {
 export function buildCompetitionPayload(formData, status) {
   return {
     title: formData.title || (status === 'Draft' ? 'Untitled Competition (Draft)' : ''),
-    category: formData.category,
+    category: formData.category || 'Technology',
     shortDescription: formData.shortDescription || 'Draft opportunity.',
-    fullDescription: formData.fullDescription,
-    banner: formData.banner,
-    thumbnail: formData.thumbnail || formData.banner,
-    educationLevels: formData.educationLevels,
-    participationType: formData.participationType,
+    fullDescription: formData.fullDescription || '',
+    banner: formData.banner || PRESET_BANNERS[0],
+    thumbnail: formData.thumbnail || formData.banner || PRESET_BANNERS[0],
+    educationLevels: formData.educationLevels || ['Open to All'],
+    participationType: formData.participationType || 'Team',
     minTeamSize: parseInt(formData.minTeamSize, 10) || 1,
     maxTeamSize: parseInt(formData.maxTeamSize, 10) || 1,
-    eligibilityRules: formData.eligibilityRules,
-    registrationOpens: formData.registrationOpens,
+    eligibilityRules: formData.eligibilityRules || '',
+    registrationOpens: formData.registrationOpens || '',
     deadline: formData.registrationDeadline || (status === 'Draft' ? 'Draft' : 'Open'),
     eventDate: formData.eventDate || (status === 'Draft' ? 'Draft' : 'TBA'),
-    eventType: formData.eventType,
-    location: formData.locationInfo || formData.eventType,
-    prizes: formData.prizes,
-    rules: formData.rules,
+    eventType: formData.eventType || 'Online',
+    location: formData.locationInfo || formData.eventType || 'Online',
+    prizes: formData.prizes || '',
+    rules: formData.rules || '',
     timeline: buildTimeline(formData),
-    registrationUrl: formData.registrationUrl,
-    contactEmail: formData.contactEmail,
-    additionalContact: formData.additionalContact
+    registrationUrl: formData.registrationUrl || '',
+    contactEmail: formData.contactEmail || '',
+    additionalContact: formData.additionalContact || '',
+    status: status || 'Draft'
   };
 }
 
 /** Prefill the form from an existing competition (edit mode). */
 export function getEditPrefill(competitions, id, organizerEmail) {
-  const existing = competitions.find((c) => c.id === id);
+  const existing = competitions.find((c) => c.id === id || c._id === id);
   if (!existing) return null;
   return {
     title: existing.title || '', category: existing.category || 'Technology',
@@ -102,10 +104,10 @@ export function getCompetitionForm(competitions, id, organizerEmail) {
     minTeamSize: '2', maxTeamSize: '5', eligibilityRules: '',
     registrationOpens: '', registrationDeadline: '', eventDate: '',
     eventType: 'Online', locationInfo: '',
-    prizes: '1st Place: ৳1,00,000 + Incubation Support\n2nd Place: ৳50,000\n3rd Place: ৳25,000',
-    rules: '1. All code and designs must be created during the competition window.\n2. Open source tooling and libraries are permitted.\n3. Respect intellectual property and event guidelines.',
-    timelineText: 'August 1 - Registration Opens\nSeptember 15 - Deadline\nOctober 1 - Results',
-    registrationUrl: '', contactEmail: organizerEmail || 'hello@yourorg.com', additionalContact: ''
+    prizes: '',
+    rules: '',
+    timelineText: '',
+    registrationUrl: '', contactEmail: organizerEmail || '', additionalContact: ''
   };
 }
 
@@ -124,58 +126,99 @@ export function validateCompetitionStep(formData, step) {
   return newErrors;
 }
 
-/** State-mutating competition actions (used by organizer views). */
+/** State-mutating competition actions connected to MongoDB backend. */
 export function useCompetitionController() {
-  const { competitions, setCompetitions, showToast } = useOrganizer();
+  const { competitions, setCompetitions, showToast, fetchCompetitions } = useOrganizer();
 
-  const createCompetition = (data, status = 'Draft') => {
-    const newComp = {
-      ...data,
-      id: `comp-${Date.now()}`,
-      status,
-      bookmarks: 0,
-      lastUpdated: 'Just now',
-      thumbnail: data.thumbnail || data.banner || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80',
-      banner: data.banner || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80'
-    };
-    setCompetitions(prev => [newComp, ...prev]);
-    showToast(status === 'Published' ? 'Competition published successfully!' : 'Competition saved as draft!');
-    return newComp;
+  const uploadImage = async (file) => {
+    try {
+      const res = await competitionApi.uploadImage(file);
+      return res.data;
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Image upload failed', 'error');
+      throw error;
+    }
   };
 
-  const updateCompetition = (id, updatedFields) => {
-    setCompetitions(prev =>
-      prev.map(c => (c.id === id ? { ...c, ...updatedFields, lastUpdated: 'Just now' } : c))
-    );
-    showToast('Competition updated successfully!');
+  const createCompetition = async (data, status = 'Draft') => {
+    try {
+      const payload = { ...data, status };
+      const res = await competitionApi.create(payload);
+      const savedComp = res.data;
+      setCompetitions(prev => [savedComp, ...prev]);
+      showToast(status === 'Published' ? 'Competition published successfully!' : 'Competition saved as draft!');
+      return savedComp;
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to create competition', 'error');
+      throw error;
+    }
   };
 
-  const deleteCompetition = (id) => {
-    setCompetitions(prev => prev.filter(c => c.id !== id));
-    showToast('Competition deleted.', 'info');
+  const updateCompetition = async (id, updatedFields) => {
+    try {
+      const res = await competitionApi.update(id, updatedFields);
+      const updatedComp = res.data;
+      setCompetitions(prev =>
+        prev.map(c => ((c.id === id || c._id === id) ? updatedComp : c))
+      );
+      showToast('Competition updated successfully!');
+      return updatedComp;
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to update competition', 'error');
+      throw error;
+    }
   };
 
-  const toggleCompetitionStatus = (id, newStatus) => {
-    setCompetitions(prev =>
-      prev.map(c => (c.id === id ? { ...c, status: newStatus, lastUpdated: 'Just now' } : c))
-    );
-    showToast(`Status changed to ${newStatus}`);
+  const deleteCompetition = async (id) => {
+    try {
+      await competitionApi.delete(id);
+      setCompetitions(prev => prev.filter(c => c.id !== id && c._id !== id));
+      showToast('Competition deleted.', 'info');
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to delete competition', 'error');
+      throw error;
+    }
   };
 
-  const duplicateCompetition = (id) => {
-    const source = competitions.find(c => c.id === id);
+  const toggleCompetitionStatus = async (id, newStatus) => {
+    try {
+      const res = await competitionApi.updateStatus(id, newStatus);
+      const updated = res.data;
+      setCompetitions(prev =>
+        prev.map(c => ((c.id === id || c._id === id) ? updated : c))
+      );
+      showToast(`Status changed to ${newStatus}`);
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to update status', 'error');
+    }
+  };
+
+  const duplicateCompetition = async (id) => {
+    const source = competitions.find(c => c.id === id || c._id === id);
     if (!source) return;
-    const duplicated = {
-      ...source,
-      id: `comp-${Date.now()}`,
-      title: `${source.title} (Copy)`,
-      status: 'Draft',
-      bookmarks: 0,
-      lastUpdated: 'Just now'
-    };
-    setCompetitions(prev => [duplicated, ...prev]);
-    showToast('Competition duplicated as Draft!');
+    try {
+      const { id: _ignoredId, _id: _ignoredMongoId, createdAt, updatedAt, ...rest } = source;
+      const duplicateData = {
+        ...rest,
+        title: `${source.title} (Copy)`,
+        status: 'Draft',
+        bookmarks: 0
+      };
+      const res = await competitionApi.create(duplicateData);
+      setCompetitions(prev => [res.data, ...prev]);
+      showToast('Competition duplicated as Draft!');
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to duplicate competition', 'error');
+    }
   };
 
-  return { createCompetition, updateCompetition, deleteCompetition, toggleCompetitionStatus, duplicateCompetition };
+  return {
+    createCompetition,
+    updateCompetition,
+    deleteCompetition,
+    toggleCompetitionStatus,
+    duplicateCompetition,
+    uploadImage,
+    fetchCompetitions
+  };
 }

@@ -134,14 +134,14 @@ const OrganizerLayout = ({ children }) => {
               <div className="space-y-3">
                 <Link to="/organizer/organization" className="organizer-profile-card-link flex items-center gap-3 group">
                   <div className="organizer-profile-avatar-circle w-9 h-9 rounded-full bg-sand text-bg flex items-center justify-center font-display text-sm font-bold shrink-0 shadow-md">
-                    {organizer.avatar || organizer.name?.[0] || 'P'}
+                    {organizer.avatar || organizer.name?.[0] || organizer.organizationName?.[0] || 'O'}
                   </div>
                   <div className="organizer-profile-info-block min-w-0 flex-1">
                     <p className="organizer-profile-display-name text-xs font-semibold text-text-primary truncate group-hover:text-sand transition-colors">
-                      {organizer.name}
+                      {organizer.name || organizer.organizationName || 'Organizer'}
                     </p>
                     <p className="organizer-profile-org-name text-[11px] text-text-muted truncate">
-                      {organizer.organizationName}
+                      {organizer.organizationName || 'My Organization'}
                     </p>
                   </div>
                 </Link>
@@ -160,9 +160,9 @@ const OrganizerLayout = ({ children }) => {
                 <Link
                   to="/organizer/organization"
                   className="organizer-profile-avatar-circle w-9 h-9 rounded-full bg-sand text-bg flex items-center justify-center font-display text-sm font-bold shadow-md"
-                  title={`${organizer.name} (${organizer.organizationName})`}
+                  title={`${organizer.name || 'Organizer'} (${organizer.organizationName || 'Organization'})`}
                 >
-                  {organizer.avatar || 'P'}
+                  {organizer.avatar || organizer.name?.[0] || organizer.organizationName?.[0] || 'O'}
                 </Link>
                 <button
                   type="button"
