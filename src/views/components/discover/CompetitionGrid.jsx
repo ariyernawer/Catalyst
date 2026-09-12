@@ -1,14 +1,15 @@
 import { CompetitionCard } from "./CompetitionCard";
 
-
-export function CompetitionGrid({ competitions }) {
+export function CompetitionGrid({ competitions, onSelect }) {
   if (competitions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-card bg-surface py-16 text-center shadow-card">
         <p className="font-display text-lg font-semibold text-text-primary">
           No competitions match that filter
         </p>
-        <p className="mt-1 text-sm text-text-muted">Try a different category or search term.</p>
+        <p className="mt-1 text-sm text-text-muted">
+          Try a different category or search term.
+        </p>
       </div>
     );
   }
@@ -19,6 +20,7 @@ export function CompetitionGrid({ competitions }) {
         <CompetitionCard
           key={competition.id}
           competition={competition}
+          onClick={onSelect ? () => onSelect(competition) : undefined}
         />
       ))}
     </div>

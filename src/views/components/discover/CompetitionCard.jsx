@@ -3,8 +3,7 @@ import { BookmarkButton } from "../ui/BookmarkButton";
 import { CountdownTimer } from "./CountdownTimer";
 import { CATEGORIES } from "../../../models/data/categories";
 
-
-export function CompetitionCard({ competition }) {
+export function CompetitionCard({ competition, onClick }) {
   const {
     title,
     organizer,
@@ -19,10 +18,15 @@ export function CompetitionCard({ competition }) {
     quote,
   } = competition;
 
-  const categoryLabel = CATEGORIES.find((entry) => entry.id === category)?.label ?? category;
+  const categoryLabel =
+    CATEGORIES.find((entry) => entry.id === category)?.label ?? category;
 
   return (
-    <article className="competition-card group relative flex flex-col overflow-hidden rounded-card bg-surface shadow-card motion-reduce:transition-none motion-reduce:hover:transform-none">
+    <article
+      onClick={onClick}
+      className={`competition-card group relative flex flex-col overflow-hidden rounded-card bg-surface shadow-card motion-reduce:transition-none motion-reduce:hover:transform-none ${onClick ? "cursor-pointer" : ""}`}
+    >
+      {" "}
       <div className="relative block aspect-[16/10] w-full overflow-hidden text-left">
         <img
           src={coverImage}
@@ -36,7 +40,7 @@ export function CompetitionCard({ competition }) {
           <Badge variant="category">{categoryLabel}</Badge>
         </div>
 
-      <div className="absolute right-3 top-3 flex items-center gap-2">
+        <div className="absolute right-3 top-3 flex items-center gap-2">
           {isHot && <Badge variant="hot">Hot</Badge>}
           <BookmarkButton isBookmarked={isBookmarked} />
         </div>
@@ -57,7 +61,6 @@ export function CompetitionCard({ competition }) {
           {prize.toLocaleString()}
         </div>
       </div>
-
       <div className="relative flex flex-1 flex-col gap-3 p-5 transition-transform duration-300 group-hover:-translate-y-0.5">
         <div>
           <p className="text-xs text-text-muted">

@@ -16,6 +16,7 @@ import PrivateRoute from './controllers/utils/PrivateRoute';
 import PublicRoute from './controllers/utils/PublicRoute';
 import { OrganizerProvider } from './models/contexts/OrganizerContext';
 import OrganizerLayout from './views/components/layout/OrganizerLayout';
+import CompetitionDetailPage from './views/pages/participant/CompetitionDetailPage';
 
 // Keys the edit page by :id so a new id remounts the form (lazy-init prefill).
 function EditCompetitionRoute() {
@@ -59,6 +60,8 @@ export default function App() {
           <Route path="/saved" element={<SavedItemsPage />} />
           <Route path="/upcoming" element={<UpcomingPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/competition/:id" element={<CompetitionDetailPage />} />
+
         </Route>
 
         {/* Protected organizer routes */}
