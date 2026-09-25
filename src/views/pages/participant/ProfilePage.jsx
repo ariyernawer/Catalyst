@@ -2,12 +2,24 @@ import { BellRing, Mail, MapPin, ShieldCheck, UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/layout/DashboardLayout";
 import { useAuthContext } from "../../../models/contexts/useAuthContext";
-import { MOCK_COMPETITIONS } from "../../../models/data/mockCompetitions";
+
+import { useEffect, useState } from "react";
+import { competitionApi } from "../../../models/api/competitionApi";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
-  const savedCount = MOCK_COMPETITIONS.filter((competition) => competition.isBookmarked).length;
+  const [savedCount, setSavedCount] = useState(0);
+
+  useEffect(() => {
+    competitionApi
+      .getBookmarks()
+      .then((res) => {
+        const items = Array.isArray(res.data) ? res.data : [];
+        setSavedCount(items.length);
+      })
+      .catch(() => setSavedCount(0));
+  }, []);
   const goToPage = (id) => navigate(id === "bookmarks" ? "/saved" : id === "upcoming" ? "/upcoming" : id === "profile" ? "/profile" : "/discover");
 
   const fullname = user?.fullname || "Participant";

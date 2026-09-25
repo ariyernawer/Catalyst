@@ -19,5 +19,10 @@ export const competitionApi = {
   },
 
   // Public events for participants/discovery
-  getPublicEvents: (params) => API.get('/organizer/events/public', { params })
+  getPublicEvents: (params) => API.get('/organizer/events/public', { params }),
+
+  // bookmarks
+  toggleBookmark: (eventId) => API.post(`/participant/bookmarks/${eventId}`),
+  removeBookmark: (eventId) => API.delete(`/participant/bookmarks/${eventId}`),
+  getBookmarks: () => API.get('/participant/bookmarks'),
 }

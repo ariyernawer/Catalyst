@@ -1,7 +1,6 @@
 import { CompetitionCard } from "./CompetitionCard";
 
-export function CompetitionGrid({ competitions, onSelect, onClearFilters }) {
-  if (competitions.length === 0) {
+export function CompetitionGrid({ competitions, onSelect, onClearFilters, onToggleBookmark }) {  if (competitions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-card bg-surface py-16 text-center shadow-card">
         <p className="font-display text-lg font-semibold text-text-primary">
@@ -30,6 +29,7 @@ export function CompetitionGrid({ competitions, onSelect, onClearFilters }) {
           key={competition.id}
           competition={competition}
           onClick={onSelect ? () => onSelect(competition) : undefined}
+          onToggleBookmark={onToggleBookmark ? () => onToggleBookmark(competition) : undefined}
         />
       ))}
     </div>

@@ -3,8 +3,7 @@ import { BookmarkButton } from "../ui/BookmarkButton";
 import { CountdownTimer } from "./CountdownTimer";
 import { getCategoryLabel } from "../../../models/data/categories";
 
-export function CompetitionCard({ competition, onClick }) {
-  const {
+export function CompetitionCard({ competition, onClick, onToggleBookmark }) {  const {
     title,
     organizer,
     audience,
@@ -41,7 +40,9 @@ export function CompetitionCard({ competition, onClick }) {
 
         <div className="absolute right-3 top-3 flex items-center gap-2">
           {isHot && <Badge variant="hot">Hot</Badge>}
-          <BookmarkButton isBookmarked={isBookmarked} />
+          <BookmarkButton isBookmarked={isBookmarked}
+          onToggle={onToggleBookmark ? () => onToggleBookmark(competition) : undefined}
+           />
         </div>
 
         {quote ? (
