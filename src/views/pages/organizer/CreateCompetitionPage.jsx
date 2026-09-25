@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom';
 import { useOrganizer } from '../../../models/contexts/useOrganizer';
 import {
-  CATEGORIES, EDUCATION_LEVELS, PRESET_BANNERS,
+  CATEGORIES, EDUCATION_LEVELS, EVENT_TYPES, PRESET_BANNERS,
   buildTimeline, buildCompetitionPayload, getCompetitionForm, validateCompetitionStep,
   useCompetitionController,
 } from '../../../controllers/competitionController';
@@ -601,7 +601,7 @@ const CreateCompetitionPage = () => {
               <div className="form-field-input-group">
                 <label className="form-field-label-text block text-[11px] font-semibold tracking-wider uppercase text-text-secondary mb-2">EVENT TYPE</label>
                 <div className="event-type-toggle-row inline-flex bg-bg border border-border p-1 rounded-xl">
-                  {['Online', 'Offline', 'Hybrid'].map((type) => (
+                  {EVENT_TYPES.map((type) => (
                     <button
                       type="button"
                       key={type}

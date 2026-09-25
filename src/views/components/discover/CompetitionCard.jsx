@@ -1,7 +1,7 @@
 import { Badge } from "../ui/Badge";
 import { BookmarkButton } from "../ui/BookmarkButton";
 import { CountdownTimer } from "./CountdownTimer";
-import { CATEGORIES } from "../../../models/data/categories";
+import { getCategoryLabel } from "../../../models/data/categories";
 
 export function CompetitionCard({ competition, onClick }) {
   const {
@@ -18,8 +18,7 @@ export function CompetitionCard({ competition, onClick }) {
     quote,
   } = competition;
 
-  const categoryLabel =
-    CATEGORIES.find((entry) => entry.id === category)?.label ?? category;
+  const categoryLabel = getCategoryLabel(category);
 
   return (
     <article

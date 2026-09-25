@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import {
   Compass, Heart, ListChecks, CircleUserRound,
-  Search, Bell, Menu, X, LogOut, ChevronRight,
+  Menu, X, LogOut, ChevronRight,
 } from "lucide-react";
 import { cn } from "../../../controllers/utils/cn";
 import { useAuthController } from "../../../controllers/authController";
@@ -22,7 +22,6 @@ export function Navbar({
   onNavigate,
   bookmarkCount = 0,
   user,
-  notificationCount = 0,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -146,38 +145,8 @@ export function Navbar({
           </span>
         </div>
 
-        
-
         {/* ── Right controls ──────────────────────────────────── */}
         <div className="ml-auto flex items-center gap-2">
-
-          {/* Search – visible on sm+ */}
-          <div className="relative hidden sm:block">
-            <Search
-              size={14}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-            />
-            <input
-              type="text"
-              readOnly
-              placeholder="Search competitions…"
-              className="w-44 rounded-full border border-border bg-bg py-2 pl-8 pr-4 text-sm text-text-primary placeholder:text-text-muted transition-all focus:border-sand focus:outline-none focus:w-56 focus:ring-2 focus:ring-sand/20 xl:w-56"
-            />
-          </div>
-
-          {/* Bell */}
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary transition-colors hover:border-sand/50 hover:text-text-primary"
-          >
-            <Bell size={17} />
-            {notificationCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-text-primary">
-                {notificationCount}
-              </span>
-            )}
-          </button>
 
           {/* User avatar chip */}
           {user && (

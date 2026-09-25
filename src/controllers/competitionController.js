@@ -1,5 +1,10 @@
 import { useOrganizer } from "../models/contexts/useOrganizer";
 import { competitionApi } from "../models/api/competitionApi";
+import {
+  CATEGORY_VALUES,
+  EDUCATION_LEVELS as FILTER_EDUCATION_LEVELS,
+  EVENT_TYPES as FILTER_EVENT_TYPES,
+} from "../models/data/categories";
 
 /**
  * Controller: competition CRUD + form helpers.
@@ -7,8 +12,9 @@ import { competitionApi } from "../models/api/competitionApi";
  * the hook exposes state-mutating actions connected to MongoDB backend.
  */
 
-export const CATEGORIES = ['Technology','Programming','Business','Case Competition','Innovation','Entrepreneurship','Design','Science','Olympiad','Other'];
-export const EDUCATION_LEVELS = ['School','College','University','Graduate','Open to All'];
+export const CATEGORIES = CATEGORY_VALUES;
+export const EDUCATION_LEVELS = FILTER_EDUCATION_LEVELS;
+export const EVENT_TYPES = FILTER_EVENT_TYPES;
 export const PRESET_BANNERS = [
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80',
   'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80',

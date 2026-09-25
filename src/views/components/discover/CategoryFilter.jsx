@@ -4,16 +4,18 @@ import { cn } from "../../../controllers/utils/cn";
  * @param {{ id: string, label: string }[]} categories
  * @param {string} activeId
  * @param {(id: string) => void} onChange
+ * @param {string} className
  */
-export function CategoryFilter({ categories, activeId, onChange }) {
+export function CategoryFilter({ categories, activeId, onChange, className = "" }) {
   return (
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+    <div className={cn("flex min-w-0 gap-2 overflow-x-auto pb-1", className)}>
       {categories.map(({ id, label }) => {
         const isActive = id === activeId;
         return (
           <button
             key={id}
             type="button"
+            aria-pressed={isActive}
             onClick={() => onChange(id)}
             className={cn(
               "shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5",

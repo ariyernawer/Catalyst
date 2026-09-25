@@ -19,7 +19,7 @@ export default function CompetitionDetailPage() {
     competitionApi
       .getPublicEvents()
       .then((res) => {
-        const found = res.data.find((e) => e.id === id);
+        const found = res.data.find((e) => (e.id || e._id) === id);
         setCompetition(found || null);
       })
       .catch(() => setCompetition(null))

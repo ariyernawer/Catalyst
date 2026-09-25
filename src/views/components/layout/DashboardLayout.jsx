@@ -12,7 +12,6 @@ import { useAuthContext } from "../../../models/contexts/useAuthContext";
  * @param {object}   user               - { name: string } (fallback; real user comes from AuthContext)
  * @param {string}   pageTitle
  * @param {string}   pageSubtitle
- * @param {number}   notificationCount
  * @param {import("react").ReactNode} children
  */
 export function DashboardLayout({
@@ -22,7 +21,6 @@ export function DashboardLayout({
   user,
   pageTitle,
   pageSubtitle,
-  notificationCount = 0,
   children,
 }) {
   const { user: authUser } = useAuthContext();
@@ -35,8 +33,8 @@ export function DashboardLayout({
         onNavigate={onNavigate}
         bookmarkCount={bookmarkCount}
         user={displayUser}
-        notificationCount={notificationCount}
       />
+
 
       <main className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {/* Page header */}
