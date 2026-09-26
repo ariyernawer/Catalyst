@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>Catalyst Change Summary</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm 15mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1f2937; font-size: 10.2pt; line-height: 1.5; margin: 0; }
+  h1 { color: #111827; font-size: 24pt; margin: 0 0 6px; }
+  h2 { color: #0f766e; font-size: 15pt; border-bottom: 2px solid #99f6e4; padding-bottom: 4px; margin-top: 22px; page-break-after: avoid; }
+  h3 { color: #374151; font-size: 11.5pt; margin: 15px 0 6px; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  ul, ol { margin-top: 5px; }
+  li { margin: 2px 0; }
+  .cover { padding: 18px 0 8px; }
+  .subtitle { color: #4b5563; font-size: 12pt; margin-bottom: 12px; }
+  .meta { color: #6b7280; font-size: 9.5pt; }
+  .callout { background: #ecfdf5; border-left: 4px solid #0f766e; padding: 9px 12px; margin: 10px 0; }
+  .warn { background: #fff7ed; border-left: 4px solid #c2410c; padding: 9px 12px; margin: 10px 0; }
+  .muted { color: #6b7280; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; page-break-inside: avoid; }
+  th { background: #0f766e; color: white; text-align: left; padding: 6px 7px; border: 1px solid #0b5f59; font-size: 9pt; }
+  td { border: 1px solid #d1d5db; padding: 5px 7px; vertical-align: top; font-size: 9pt; }
+  tr:nth-child(even) td { background: #f9fafb; }
+  code, pre { font-family: Consolas, "Courier New", monospace; }
+  code { background: #f3f4f6; padding: 1px 3px; border-radius: 3px; font-size: 8.6pt; }
+  pre { background: #111827; color: #e5e7eb; padding: 9px 10px; border-radius: 5px; overflow-wrap: anywhere; white-space: pre-wrap; font-size: 8pt; line-height: 1.35; page-break-inside: avoid; margin: 7px 0 10px; }
+  .pagebreak { page-break-before: always; }
+  .small { font-size: 8.5pt; }
+  .green { color: #047857; font-weight: bold; }
+  .red { color: #b91c1c; font-weight: bold; }
+  .nowrap { white-space: nowrap; }
+  .footer-note { margin-top: 20px; padding-top: 8px; border-top: 1px solid #d1d5db; color: #6b7280; font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Catalyst — Change Summary</h1>
+  <p class="subtitle">Participant UX updates, Upcoming calendar, and navbar cleanup</p>
+  <p class="meta">Report date: 26 September 2026 &nbsp;|&nbsp; Frontend: E:\Catalyst &nbsp;|&nbsp; Backend: E:\Catalyst_backend</p>
+  <div class="callout"><strong>Executive summary:</strong> All feature work was done in the frontend. The backend repository is clean: no backend model, controller, or route was changed. The frontend continues to use the existing <code>GET /api/organizer/events/public</code> endpoint.</div>
+</div>
+
+<h2>1. Scope and outcome</h2>
+<table>
+  <tr><th>Item</th><th>Result</th></tr>
+  <tr><td>Frontend files changed</td><td>11 source files plus the local <code>.env</code> configuration file.</td></tr>
+  <tr><td>Backend files changed</td><td><span class="green">None.</span> <code>E:\Catalyst_backend</code> has a clean Git working tree.</td></tr>
+  <tr><td>Discover</td><td>Live public-event loading, keyword search, category/education/event/date filters, compact filter panel, loading and error states.</td></tr>
+  <tr><td>Upcoming</td><td>Live deadline list replaced with a month calendar, selected-day panel, event/deadline markers, and due-this-week list.</td></tr>
+  <tr><td>Navbar</td><td>Persistent search input and notification bell button removed. No replacement feature was added.</td></tr>
+  <tr><td>Not implemented</td><td>Application/profile update system, new application form, new backend application model/route, notification backend.</td></tr>
+</table>
+
+<h2>2. Complete changed-file inventory</h2>
+<table>
+  <tr><th>#</th><th>File</th><th>Feature / purpose</th><th>What changed</th></tr>
+  <tr><td>1</td><td><code>.env</code></td><td>Local API configuration</td><td>Local frontend API base configuration is modified. Secret values are intentionally not reproduced in this report.</td></tr>
+  <tr><td>2</td><td><code>src/models/data/categories.js</code></td><td>Shared competition metadata</td><td>Canonical categories, aliases, education levels, event types, category label resolution, and category matching helpers.</td></tr>
+  <tr><td>3</td><td><code>src/controllers/competitionController.js</code></td><td>Shared filter/form metadata</td><td>Exports the shared category, education-level, and event-type constants instead of duplicating hardcoded values.</td></tr>
+  <tr><td>4</td><td><code>src/views/pages/organizer/CreateCompetitionPage.jsx</code></td><td>Organizer event-type form</td><td>Event type buttons now use the shared <code>EVENT_TYPES</code> list.</td></tr>
+  <tr><td>5</td><td><code>src/views/components/discover/CategoryFilter.jsx</code></td><td>Category chips</td><td>Single-row horizontal scrolling, <code>className</code> support, and <code>aria-pressed</code> state.</td></tr>
+  <tr><td>6</td><td><code>src/views/components/discover/CompetitionCard.jsx</code></td><td>Category display</td><td>Uses <code>getCategoryLabel()</code> for consistent category labels.</td></tr>
+  <tr><td>7</td><td><code>src/views/components/discover/CompetitionGrid.jsx</code></td><td>No-results state</td><td>Clear-filter button and improved no-results copy.</td></tr>
+  <tr><td>8</td><td><code>src/views/pages/participant/DiscoverPage.jsx</code></td><td>Discover search/filter UX</td><td>Live API data mapping, keyword search, category/education/event/date filters, collapsible filter panel, active count, loading/error states.</td></tr>
+  <tr><td>9</td><td><code>src/views/pages/participant/CompetitionDetailPage.jsx</code></td><td>Event ID compatibility</td><td>Fallback lookup for both <code>id</code> and MongoDB <code>_id</code>.</td></tr>
+  <tr><td>10</td><td><code>src/views/pages/participant/UpcomingPage.jsx</code></td><td>Deadline calendar</td><td>Live events, month grid, event/deadline markers, month navigation, Today button, selected-day details, due-this-week list and countdown.</td></tr>
+  <tr><td>11</td><td><code>src/views/components/layout/Navbar.jsx</code></td><td>Navbar cleanup</td><td>Removed the persistent search input and the notification bell button.</td></tr>
+  <tr><td>12</td><td><code>src/views/components/layout/DashboardLayout.jsx</code></td><td>Layout prop cleanup</td><td>Removed the <code>notificationCount</code> prop and its forwarding to <code>Navbar</code>.</td></tr>
+</table>
+
+<h2>3. Feature-to-file map</h2>
+<table>
+  <tr><th>Feature</th><th>Primary file(s)</th></tr>
+  <tr><td>Keyword search</td><td><code>DiscoverPage.jsx</code></td></tr>
+  <tr><td>Category filter</td><td><code>DiscoverPage.jsx</code>, <code>CategoryFilter.jsx</code>, <code>categories.js</code></td></tr>
+  <tr><td>Education level filter</td><td><code>DiscoverPage.jsx</code>, <code>categories.js</code></td></tr>
+  <tr><td>Event type filter</td><td><code>DiscoverPage.jsx</code>, <code>categories.js</code></td></tr>
+  <tr><td>Date range filter</td><td><code>DiscoverPage.jsx</code></td></tr>
+  <tr><td>Calendar view</td><td><code>UpcomingPage.jsx</code></td></tr>
+  <tr><td>Due this week</td><td><code>UpcomingPage.jsx</code></td></tr>
+  <tr><td>Event date / deadline markers</td><td><code>UpcomingPage.jsx</code></td></tr>
+  <tr><td>Selected-day details</td><td><code>UpcomingPage.jsx</code></td></tr>
+  <tr><td>Notification removal</td><td><code>Navbar.jsx</code>, <code>DashboardLayout.jsx</code></td></tr>
+  <tr><td>Shared organizer options</td><td><code>categories.js</code>, <code>competitionController.js</code>, <code>CreateCompetitionPage.jsx</code></td></tr>
+</table>
+
+<div class="pagebreak"></div>
+<h2>4. Actual code excerpts</h2>
+<p class="muted">The following are the main changed sections. Unchanged surrounding markup and styling are omitted.</p>
+
+<h3>4.1 Navbar — search and notification removal</h3>
+<p><strong>File:</strong> <code>src/views/components/layout/Navbar.jsx</code></p>
+<pre> import {
+   Compass, Heart, ListChecks, CircleUserRound,
+-  Search, Bell, Menu, X, LogOut, ChevronRight,
++  Menu, X, LogOut, ChevronRight,
+ } from "lucide-react";
+
+ export function Navbar({
+   activeId = "discover",
+   onNavigate,
+   bookmarkCount = 0,
+   user,
+-  notificationCount = 0,
+ }) {</pre>
+<p>The old read-only “Search competitions…” input and the Bell button with its count badge were deleted from the right side of the navbar.</p>
+
+<h3>4.2 DashboardLayout — notification prop removal</h3>
+<p><strong>File:</strong> <code>src/views/components/layout/DashboardLayout.jsx</code></p>
+<pre>- * @param {number}   notificationCount
+...
+-  notificationCount = 0,
+...
+ &lt;Navbar
+   activeId={activeNavId}
+   onNavigate={onNavigate}
+   bookmarkCount={bookmarkCount}
+   user={displayUser}
+-  notificationCount={notificationCount}
+ /&gt;</pre>
+
+<h3>4.3 Shared category metadata</h3>
+<p><strong>File:</strong> <code>src/models/data/categories.js</code></p>
+<pre>export const CATEGORY_OPTIONS = [
+  { id: "hackathon", label: "Hackathon", aliases: ["Hackathons"] },
+  { id: "innovation", label: "Innovation" },
+  { id: "business", label: "Business" },
+  { id: "programming", label: "Programming" },
+  { id: "technology", label: "Technology" },
+  { id: "case-competition", label: "Case Competition" },
+  { id: "entrepreneurship", label: "Entrepreneurship" },
+  { id: "design", label: "Design" },
+  { id: "science", label: "Science" },
+  { id: "olympiad", label: "Olympiad", aliases: ["Olympiads"] },
+  { id: "other", label: "Other" },
+];
+
+export const CATEGORIES = [
+  { id: "all", label: "All" },
+  ...CATEGORY_OPTIONS,
+];
+
+export const CATEGORY_VALUES = CATEGORY_OPTIONS.map(({ label }) =&gt; label);
+export const EDUCATION_LEVELS = ["School", "College", "University", "Graduate", "Open to All"];
+export const EVENT_TYPES = ["Online", "Offline", "Hybrid"];</pre>
+<pre>export function getCategoryLabel(category) {
+  const normalized = normalizeCategory(category);
+  const match = CATEGORY_OPTIONS.find((entry) =&gt; categoryValues(entry).includes(normalized));
+  return match?.label || category || "Other";
+}
+
+export function categoryMatches(category, selectedId) {
+  if (!selectedId || selectedId === "all") return true;
+  const selected = CATEGORIES.find((entry) =&gt; entry.id === selectedId);
+  if (!selected) return false;
+  return categoryValues(selected).includes(normalizeCategory(category));
+}</pre>
+
+<h3>4.4 Shared controller and organizer form</h3>
+<p><strong>File:</strong> <code>src/controllers/competitionController.js</code></p>
+<pre>import {
+  CATEGORY_VALUES,
+  EDUCATION_LEVELS as FILTER_EDUCATION_LEVELS,
+  EVENT_TYPES as FILTER_EVENT_TYPES,
+} from "../models/data/categories";
+
+export const CATEGORIES = CATEGORY_VALUES;
+export const EDUCATION_LEVELS = FILTER_EDUCATION_LEVELS;
+export const EVENT_TYPES = FILTER_EVENT_TYPES;</pre>
+<p><strong>File:</strong> <code>src/views/pages/organizer/CreateCompetitionPage.jsx</code></p>
+<pre>import {
+  CATEGORIES, EDUCATION_LEVELS, EVENT_TYPES, PRESET_BANNERS,
+  ...
+} from '../../../controllers/competitionController';
+
+{EVENT_TYPES.map((type) =&gt; (
+  &lt;button
+    key={type}
+    type="button"
+    onClick={() =&gt; setFormData((prev) =&gt; ({ ...prev, eventType: type }))}
+  &gt;
+    {type}
+  &lt;/button&gt;
+))}</pre>
+
+<h3>4.5 Category filter, card, and grid</h3>
+<p><strong>File:</strong> <code>CategoryFilter.jsx</code></p>
+<pre>export function CategoryFilter({ categories, activeId, onChange, className = "" }) {
+  return (
+    &lt;div className={cn("flex min-w-0 gap-2 overflow-x-auto pb-1", className)}&gt;
+      {categories.map(({ id, label }) =&gt; {
+        const isActive = id === activeId;
+        return (
+          &lt;button
+            key={id}
+            type="button"
+            aria-pressed={isActive}
+            onClick={() =&gt; onChange(id)}
+          &gt;
+            {label}
+          &lt;/button&gt;
+        );
+      })}
+    &lt;/div&gt;
+  );
+}</pre>
+<p><strong>File:</strong> <code>CompetitionCard.jsx</code></p>
+<pre>import { getCategoryLabel } from "../../../models/data/categories";
+...
+const categoryLabel = getCategoryLabel(category);
+...
+&lt;Badge variant="category"&gt;{categoryLabel}&lt;/Badge&gt;</pre>
+<p><strong>File:</strong> <code>CompetitionGrid.jsx</code></p>
+<pre>export function CompetitionGrid({ competitions, onSelect, onClearFilters }) {
+  if (competitions.length === 0) {
+    return (
+      ...
+      {onClearFilters &amp;&amp; (
+        &lt;button type="button" onClick={onClearFilters}&gt;
+          Clear all filters
+        &lt;/button&gt;
+      )}
+    );
+  }
+}</pre>
+
+<h3>4.6 DiscoverPage — filters</h3>
+<p><strong>File:</strong> <code>src/views/pages/participant/DiscoverPage.jsx</code></p>
+<pre>const DEFAULT_FILTERS = {
+  category: "all",
+  educationLevel: "",
+  eventType: "",
+  dateField: "eventDate",
+  fromDate: "",
+  toDate: "",
+};
+
+const DATE_FIELDS = [
+  { value: "eventDate", label: "Event date" },
+  { value: "deadline", label: "Registration deadline" },
+];</pre>
+<pre>const filteredCompetitions = useMemo(() =&gt; {
+  const queryTerms = normalizeText(searchQuery).split(/\s+/).filter(Boolean);
+
+  return competitions.filter((competition) =&gt; {
+    const searchText = getSearchText(competition);
+    const matchesSearch =
+      queryTerms.length === 0 || queryTerms.every((term) =&gt; searchText.includes(term));
+    const matchesEventType =
+      !filters.eventType ||
+      normalizeText(competition.eventType) === normalizeText(filters.eventType);
+
+    return (
+      matchesSearch &amp;&amp;
+      categoryMatches(competition.category, filters.category) &amp;&amp;
+      matchesEducationLevel(competition, filters.educationLevel) &amp;&amp;
+      matchesEventType &amp;&amp;
+      matchesDateRange(competition, filters)
+    );
+  });
+}, [competitions, filters, searchQuery]);</pre>
+<pre>&lt;CategoryFilter
+  categories={CATEGORIES}
+  activeId={filters.category}
+  onChange={(id) =&gt; updateFilter("category", id)}
+  className="pr-1"
+/&gt;
+
+&lt;button
+  type="button"
+  onClick={() =&gt; setIsFilterOpen((open) =&gt; !open)}
+  aria-expanded={isFilterOpen}
+  aria-controls="competition-filters-panel"
+&gt;
+  &lt;SlidersHorizontal size={15} /&gt;
+  &lt;span&gt;Filters&lt;/span&gt;
+  {activeFilterCount &gt; 0 &amp;&amp; &lt;span&gt;{activeFilterCount}&lt;/span&gt;}
+&lt;/button&gt;</pre>
+<pre>&lt;CompetitionGrid
+  competitions={filteredCompetitions}
+  onSelect={(competition) =&gt; navigate(`/competition/${competition.id}`)}
+  onClearFilters={hasActiveFilters ? clearFilters : undefined}
+/&gt;</pre>
+
+<h3>4.7 UpcomingPage — calendar and due-this-week</h3>
+<p><strong>File:</strong> <code>src/views/pages/participant/UpcomingPage.jsx</code></p>
+<pre>const DUE_WINDOW_DAYS = 7;
+const DATE_PLACEHOLDERS = new Set(["tba", "open", "draft", "closed"]);
+const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function parseDate(value) {
+  const text = String(value ?? "").trim();
+  if (!text || DATE_PLACEHOLDERS.has(normalizeText(text))) return null;
+
+  const dateOnly = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|T|\s)/.exec(text);
+  const date = dateOnly
+    ? new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]))
+    : new Date(text);
+
+  return Number.isNaN(date.getTime()) ? null : startOfDay(date);
+}
+
+function getCalendarDays(month) {
+  const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+
+  return Array.from({ length: 42 }, (_, index) =&gt; {
+    const day = new Date(month.getFullYear(), month.getMonth(), 1 - mondayOffset + index);
+    return startOfDay(day);
+  });
+}</pre>
+<pre>function toCalendarCompetition(event, today) {
+  if (!event || typeof event !== "object") return null;
+  if (event.status &amp;&amp; event.status !== "Published") return null;
+
+  const parsedEventDate = parseDate(event?.eventDate);
+  const parsedDeadline = parseDate(event?.deadline);
+  const eventDate = parsedEventDate &amp;&amp; parsedEventDate &gt;= today ? parsedEventDate : null;
+  const deadline = parsedDeadline &amp;&amp; parsedDeadline &gt;= today ? parsedDeadline : null;
+  if (!eventDate &amp;&amp; !deadline) return null;
+
+  return {
+    id: event.id ?? event._id,
+    title: event.title || "Untitled competition",
+    eventDate,
+    deadline,
+    deadlineForCountdown: getCountdownDeadline(event.deadline),
+    ...
+  };
+}</pre>
+<pre>const eventsByDay = useMemo(() =&gt; {
+  const grouped = new Map();
+
+  const addEntry = (date, competition, calendarType) =&gt; {
+    if (!date) return;
+    const key = dateKey(date);
+    const entries = grouped.get(key) || [];
+    entries.push({ ...competition, calendarType, calendarDate: date });
+    grouped.set(key, entries);
+  };
+
+  calendarCompetitions.forEach((competition) =&gt; {
+    addEntry(competition.eventDate, competition, "event");
+    addEntry(competition.deadline, competition, "deadline");
+  });
+
+  return grouped;
+}, [calendarCompetitions]);</pre>
+<pre>const dueCompetitions = useMemo(
+  () =&gt;
+    calendarCompetitions
+      .filter((competition) =&gt; {
+        if (!competition.deadline) return false;
+        const time = getTimeRemaining(competition.deadlineForCountdown);
+        return !time.isPast &amp;&amp; Number.isFinite(time.days) &amp;&amp; time.days &lt;= DUE_WINDOW_DAYS;
+      })
+      .sort((first, second) =&gt; first.deadline.getTime() - second.deadline.getTime()),
+  [calendarCompetitions],
+);</pre>
+<pre>{dayEntries.slice(0, 3).map((entry) =&gt; (
+  &lt;span
+    key={`${entry.id}-${entry.calendarType}`}
+    className={cn(
+      "h-1.5 w-1.5 rounded-full",
+      isSelected
+        ? "bg-text-primary"
+        : entry.calendarType === "deadline"
+          ? "bg-danger"
+          : "bg-sand",
+    )}
+  /&gt;
+))}</pre>
+<p>Calendar navigation uses Today, previous month, and next month controls. Clicking a competition navigates to its detail page. The due-this-week list renders a <code>CountdownTimer</code>.</p>
+
+<h3>4.8 CompetitionDetailPage — ID fallback</h3>
+<p><strong>File:</strong> <code>src/views/pages/participant/CompetitionDetailPage.jsx</code></p>
+<pre>const found = res.data.find((event) =&gt; (event.id || event._id) === id);</pre>
+
+<h2>5. Backend status</h2>
+<p>No backend code was changed. The frontend uses the existing public events endpoint already present in the backend.</p>
+<table>
+  <tr><th>Backend file</th><th>Status</th><th>Purpose</th></tr>
+  <tr><td><code>E:\Catalyst_backend\models\event.js</code></td><td>Unchanged</td><td>Existing event fields such as <code>eventDate</code>, <code>deadline</code>, and <code>status</code>.</td></tr>
+  <tr><td><code>E:\Catalyst_backend\controllers\organizer_event.js</code></td><td>Unchanged</td><td>Existing public events response.</td></tr>
+  <tr><td><code>E:\Catalyst_backend\routes\organizer_routes.js</code></td><td>Unchanged</td><td>Existing public events route.</td></tr>
+  <tr><td><code>src/models/api/competitionApi.js</code></td><td>Unchanged</td><td>Frontend wrapper for <code>getPublicEvents()</code>.</td></tr>
+</table>
+<pre>competitionApi.getPublicEvents()
+
+// Backend endpoint used by the frontend:
+// GET /api/organizer/events/public</pre>
+
+<h2>6. Verification results</h2>
+<table>
+  <tr><th>Check</th><th>Result</th></tr>
+  <tr><td><code>npm run build</code></td><td><span class="green">Passed</span></td></tr>
+  <tr><td>Calendar grid and due-window check</td><td><span class="green">Passed</span></td></tr>
+  <tr><td>Public events API check</td><td><span class="green">Passed</span></td></tr>
+  <tr><td>Changed feature files targeted ESLint</td><td><span class="green">Passed; no new errors</span></td></tr>
+  <tr><td><code>git diff --check</code></td><td><span class="green">No whitespace errors</span>; only LF/CRLF warnings from Git.</td></tr>
+  <tr><td>Backend Git status</td><td><span class="green">Clean</span></td></tr>
+</table>
+
+<h2>7. Remaining pre-existing lint issues</h2>
+<div class="warn">These were present before the current Discover/Upcoming/Navbar work and were not changed:</div>
+<table>
+  <tr><th>File</th><th>Issue</th></tr>
+  <tr><td><code>src/controllers/competitionController.js:206</code></td><td>Four unused variables: <code>_ignoredId</code>, <code>_ignoredMongoId</code>, <code>createdAt</code>, <code>updatedAt</code>.</td></tr>
+  <tr><td><code>src/models/contexts/OrganizerContext.jsx:58</code></td><td><code>react-hooks/set-state-in-effect</code>.</td></tr>
+  <tr><td><code>src/views/pages/organizer/CreateCompetitionPage.jsx:11</code></td><td>Unused <code>ImageIcon</code> and <code>X</code> imports.</td></tr>
+</table>
+
+<h2>8. Explicitly not implemented</h2>
+<ul>
+  <li>My Applications flow or in-app application form.</li>
+  <li>Application/profile update system.</li>
+  <li>New application model or API route.</li>
+  <li>Notification backend or replacement notification feature.</li>
+  <li>Any commit or unrelated refactor.</li>
+</ul>
+
+<h2>9. Reproduce the full diff locally</h2>
+<p>To see the complete line-by-line diff without showing the private <code>.env</code> value:</p>
+<pre>cd E:\Catalyst
+git diff -- . ":!.env"</pre>
+
+<p class="footer-note">This report summarizes the current working tree. It intentionally omits environment secrets and does not claim any backend implementation that was not changed.</p>
+</body>
+</html>

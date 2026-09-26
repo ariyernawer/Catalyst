@@ -1,8 +1,4 @@
-/**
- * Canonical competition metadata used by both the participant filters and
- * organizer forms. Keep the API value in `label` so existing records match
- * without a migration.
- */
+
 export const CATEGORY_OPTIONS = [
   { id: "hackathon", label: "Hackathon", aliases: ["Hackathons"] },
   { id: "innovation", label: "Innovation" },
