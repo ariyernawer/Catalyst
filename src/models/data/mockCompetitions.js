@@ -1,5 +1,4 @@
-// Mock data removed — competitions will come from the backend API
-// once the organizer CRUD is connected. Everything is zeroed for now.
+
 
 export const MOCK_COMPETITIONS = [];
 
