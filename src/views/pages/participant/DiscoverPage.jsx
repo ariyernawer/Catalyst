@@ -206,6 +206,11 @@ const competitionsWithBookmarks = useMemo(
     return next;
   });
 
+
+
+
+  
+
   try {
     if (wasBookmarked) await competitionApi.removeBookmark(competition.id);
     else await competitionApi.toggleBookmark(competition.id);
@@ -218,6 +223,11 @@ const competitionsWithBookmarks = useMemo(
     });
   }
 };
+
+
+
+
+
 
   const hasActiveFilters = Boolean(
     searchQuery.trim() ||
