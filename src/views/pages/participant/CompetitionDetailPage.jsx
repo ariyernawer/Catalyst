@@ -8,6 +8,10 @@ import { Button } from "../../components/ui/Button";
 import { competitionApi } from "../../../models/api/competitionApi";
 import { useAuthContext } from "../../../models/contexts/useAuthContext";
 
+
+
+
+
 export default function CompetitionDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();

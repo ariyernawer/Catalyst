@@ -48,7 +48,8 @@ export default function SavedItemsPage() {
     if (id === "upcoming") return navigate("/upcoming");
     if (id === "profile") return navigate("/profile");
     return navigate("/discover");
-  };
+  }; 
+  
 
   return (
     <DashboardLayout
